@@ -1,0 +1,6 @@
+export const CITA_ESTADOS = {
+  PENDIENTE: 1,
+  CONFIRMADA: 2,
+  ATENDIDA: 3,
+  CANCELADA: 4,
+};
