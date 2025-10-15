@@ -33,7 +33,7 @@ export const actualizarCita = catchAsync(async (req, res, next) => {
   });
 });
 
-export const cancelarCita = catchAsync(async (req, res, next) => {
+export const cancelarCitaController = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   await cancelarCita(id, req.usuario);
   res.status(HTTP_STATUS.NO_CONTENT).json({

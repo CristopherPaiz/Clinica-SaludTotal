@@ -11,8 +11,6 @@ export const inicializarBaseDeDatos = async () => {
     await db.sequelize.sync({ force: true });
     console.log("Tablas creadas exitosamente.");
 
-    const now = new Date();
-
     await db.Configuracion.create({
       nombre_negocio: "Clínica SaludTotal",
       servicios: "Ofrecemos servicios de Cardiología, Pediatría y Dermatología con profesionales altamente calificados.",
@@ -36,103 +34,97 @@ export const inicializarBaseDeDatos = async () => {
       ],
     });
 
+    const now = new Date();
     const usuarios = await db.Usuario.bulkCreate(
       [
         { username: "admin", password_hash: await hashPassword("admin123"), rol: ROLES.ADMIN, createdAt: now, updatedAt: now },
+        { username: "superadmin", password_hash: await hashPassword("superadmin123"), rol: ROLES.ADMIN, createdAt: now, updatedAt: now },
         { username: "cmorales", password_hash: await hashPassword("medico123"), rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
         { username: "acastillo", password_hash: await hashPassword("medico123"), rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
-        { username: "jhernandez", password_hash: await hashPassword("user123"), rol: ROLES.PACIENTE, createdAt: now, updatedAt: now },
-        { username: "mrodriguez", password_hash: await hashPassword("user123"), rol: ROLES.PACIENTE, createdAt: now, updatedAt: now },
-        { username: "pgomez", password_hash: await hashPassword("user123"), rol: ROLES.PACIENTE, createdAt: now, updatedAt: now },
+        { username: "lvega", password_hash: await hashPassword("medico123"), rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
+        { username: "jbarrios", password_hash: await hashPassword("medico123"), rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
+        ...Array.from({ length: 10 }, (_, i) => ({
+          username: `paciente${i + 1}`,
+          password_hash: "user123",
+          rol: ROLES.PACIENTE,
+          createdAt: now,
+          updatedAt: now,
+        })),
       ],
-      { returning: true }
+      { individualHooks: true, returning: true }
     );
 
     const medicos = await db.Medico.bulkCreate(
       [
-        {
-          nombre_completo: "Dr. Carlos Morales",
-          colegiado: "12345",
-          especialidad: "Cardiología",
-          usuarioId: usuarios[1].id,
-          createdAt: now,
-          updatedAt: now,
-        },
-        {
-          nombre_completo: "Dra. Ana Sofía Castillo",
-          colegiado: "54321",
-          especialidad: "Pediatría",
-          usuarioId: usuarios[2].id,
-          createdAt: now,
-          updatedAt: now,
-        },
+        { nombre_completo: "Dr. Carlos Morales", colegiado: "12345", especialidad: "Cardiología", usuarioId: usuarios[2].id },
+        { nombre_completo: "Dra. Ana Sofía Castillo", colegiado: "54321", especialidad: "Pediatría", usuarioId: usuarios[3].id },
+        { nombre_completo: "Dra. Lucía Vega", colegiado: "98765", especialidad: "Dermatología", usuarioId: usuarios[4].id },
+        { nombre_completo: "Dr. Javier Barrios", colegiado: "67890", especialidad: "Cardiología", usuarioId: usuarios[5].id },
       ],
       { returning: true }
     );
 
-    const pacientes = await db.Paciente.bulkCreate(
-      [
-        {
-          nombre_completo: "José Hernández",
-          dpi: "2580123450101",
-          email: "jose.hernandez@example.com",
-          telefono: "55551111",
-          usuarioId: usuarios[3].id,
-          createdAt: now,
-          updatedAt: now,
-        },
-        {
-          nombre_completo: "María Rodríguez",
-          dpi: "2580123450102",
-          email: "maria.rodriguez@example.com",
-          telefono: "55552222",
-          usuarioId: usuarios[4].id,
-          createdAt: now,
-          updatedAt: now,
-        },
-        {
-          nombre_completo: "Pedro Gómez",
-          dpi: "2580123450103",
-          email: "pedro.gomez@example.com",
-          telefono: "55553333",
-          usuarioId: usuarios[5].id,
-          createdAt: now,
-          updatedAt: now,
-        },
-      ],
-      { returning: true }
-    );
-
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const getCitaTime = (hour, minute) => new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), hour, minute, 0);
-
-    await db.Cita.bulkCreate([
-      {
-        fecha_hora: getCitaTime(9, 0),
-        estado: CITA_ESTADOS.CONFIRMADA,
-        pacienteId: pacientes[0].id,
-        medicoId: medicos[0].id,
-        createdAt: now,
-        updatedAt: now,
-      },
-      {
-        fecha_hora: getCitaTime(10, 0),
-        estado: CITA_ESTADOS.PENDIENTE,
-        pacienteId: pacientes[1].id,
-        medicoId: medicos[0].id,
-        createdAt: now,
-        updatedAt: now,
-      },
-      {
-        fecha_hora: getCitaTime(11, 0),
-        estado: CITA_ESTADOS.CONFIRMADA,
-        pacienteId: pacientes[2].id,
-        medicoId: medicos[1].id,
-        createdAt: now,
-        updatedAt: now,
-      },
+    await db.HorarioMedico.bulkCreate([
+      { medicoId: medicos[0].id, dia_semana: 1, hora_inicio: "08:00", hora_fin: "12:00" },
+      { medicoId: medicos[0].id, dia_semana: 3, hora_inicio: "08:00", hora_fin: "12:00" },
+      { medicoId: medicos[0].id, dia_semana: 5, hora_inicio: "08:00", hora_fin: "12:00" },
+      { medicoId: medicos[1].id, dia_semana: 2, hora_inicio: "14:00", hora_fin: "18:00" },
+      { medicoId: medicos[1].id, dia_semana: 4, hora_inicio: "14:00", hora_fin: "18:00" },
+      { medicoId: medicos[2].id, dia_semana: 1, hora_inicio: "09:00", hora_fin: "17:00" },
+      { medicoId: medicos[2].id, dia_semana: 2, hora_inicio: "09:00", hora_fin: "17:00" },
+      { medicoId: medicos[3].id, dia_semana: 5, hora_inicio: "10:00", hora_fin: "14:00" },
     ]);
+
+    const nombresPacientes = [
+      "José Hernández",
+      "María Rodríguez",
+      "Pedro Gómez",
+      "Sofía Fuentes",
+      "Luis Vásquez",
+      "Ana Pérez",
+      "Juan García",
+      "Laura Martínez",
+      "Diego López",
+      "Carla Sánchez",
+    ];
+    const pacientes = await db.Paciente.bulkCreate(
+      Array.from({ length: 10 }, (_, i) => ({
+        nombre_completo: nombresPacientes[i],
+        dpi: `25801234501${String(i).padStart(2, "0")}`,
+        email: `paciente${i + 1}@example.com`,
+        telefono: `5555${String(i).padStart(4, "0")}`,
+        usuarioId: usuarios[i + 6].id,
+      })),
+      { returning: true }
+    );
+
+    const baseDate = new Date("2025-10-18T00:00:00Z");
+    const citas = [
+      { medico: 0, paciente: 0, diaOffset: 2, hora: 9, min: 30 },
+      { medico: 0, paciente: 1, diaOffset: 2, hora: 10, min: 0 },
+      { medico: 1, paciente: 2, diaOffset: 3, hora: 14, min: 0 },
+      { medico: 1, paciente: 3, diaOffset: 3, hora: 15, min: 30 },
+      { medico: 2, paciente: 4, diaOffset: 2, hora: 11, min: 0 },
+      { medico: 2, paciente: 5, diaOffset: 3, hora: 10, min: 0 },
+      { medico: 3, paciente: 6, diaOffset: 6, hora: 10, min: 30 },
+      { medico: 0, paciente: 7, diaOffset: 4, hora: 9, min: 0 },
+      { medico: 1, paciente: 8, diaOffset: 5, hora: 16, min: 0 },
+      { medico: 2, paciente: 9, diaOffset: 2, hora: 14, min: 30 },
+    ];
+
+    await db.Cita.bulkCreate(
+      citas.map((c) => {
+        const fecha = new Date(baseDate);
+        fecha.setUTCDate(baseDate.getUTCDate() + c.diaOffset);
+        fecha.setUTCHours(c.hora, c.min, 0, 0);
+        return {
+          fecha_hora: fecha,
+          estado: CITA_ESTADOS.PENDIENTE,
+          pacienteId: pacientes[c.paciente].id,
+          medicoId: medicos[c.medico].id,
+        };
+      })
+    );
 
     console.log("Datos de prueba insertados.");
     console.log("¡Base de datos inicializada/reseteada exitosamente!");

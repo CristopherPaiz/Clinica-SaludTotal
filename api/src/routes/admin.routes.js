@@ -5,13 +5,14 @@ import {
   crearNuevoPaciente,
   obtenerMedicoPorId,
   actualizarMedico,
-  eliminarMedico,
+  eliminarMedicoController,
   obtenerPacientePorId,
   actualizarPaciente,
-  eliminarPaciente,
+  eliminarPacienteController,
 } from "../controllers/admin.controller.js";
 import { isAuth } from "../middleware/auth.js";
 import { PERMISOS, TIPOS_PERMISO } from "../utils/permissions.js";
+import horarioRoutes from "./horario.routes.js";
 
 const router = Router();
 
@@ -22,11 +23,13 @@ router.get("/usuarios", listarUsuarios);
 router.post("/medicos", isAuth(PERMISOS.ADMIN_PANEL, TIPOS_PERMISO.ESCRITURA), crearNuevoMedico);
 router.get("/medicos/:id", obtenerMedicoPorId);
 router.put("/medicos/:id", isAuth(PERMISOS.ADMIN_PANEL, TIPOS_PERMISO.ESCRITURA), actualizarMedico);
-router.delete("/medicos/:id", isAuth(PERMISOS.ADMIN_PANEL, TIPOS_PERMISO.ESCRITURA), eliminarMedico);
+router.delete("/medicos/:id", isAuth(PERMISOS.ADMIN_PANEL, TIPOS_PERMISO.ESCRITURA), eliminarMedicoController);
+
+router.use("/medicos/:medicoId/horarios", isAuth(PERMISOS.ADMIN_PANEL, TIPOS_PERMISO.ESCRITURA), horarioRoutes);
 
 router.post("/pacientes", isAuth(PERMISOS.ADMIN_PANEL, TIPOS_PERMISO.ESCRITURA), crearNuevoPaciente);
 router.get("/pacientes/:id", obtenerPacientePorId);
 router.put("/pacientes/:id", isAuth(PERMISOS.ADMIN_PANEL, TIPOS_PERMISO.ESCRITURA), actualizarPaciente);
-router.delete("/pacientes/:id", isAuth(PERMISOS.ADMIN_PANEL, TIPOS_PERMISO.ESCRITURA), eliminarPaciente);
+router.delete("/pacientes/:id", isAuth(PERMISOS.ADMIN_PANEL, TIPOS_PERMISO.ESCRITURA), eliminarPacienteController);
 
 export default router;

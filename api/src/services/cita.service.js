@@ -3,7 +3,7 @@ import { Op } from "sequelize";
 import { ROLES, CITA_ESTADOS, HTTP_STATUS } from "../dictionaries/index.js";
 import { createAppError } from "../utils/appError.js";
 
-const { Cita, Paciente, Medico, Configuracion } = db;
+const { Cita, Paciente, Medico, Configuracion, HorarioMedico } = db;
 
 export const buscarCitas = async (query, usuario) => {
   const { page = 1, size = 10, estado, medicoId, fecha } = query;
@@ -53,6 +53,27 @@ export const crearNuevaCita = async (datosCita, usuario) => {
 
   if (fechaCita < new Date()) {
     throw createAppError("No se pueden crear citas en el pasado.", HTTP_STATUS.BAD_REQUEST);
+  }
+
+  const diaSemana = fechaCita.getUTCDay();
+  const horaCitaEnMinutos = fechaCita.getUTCHours() * 60 + fechaCita.getUTCMinutes();
+
+  const horarioDelDia = await HorarioMedico.findOne({ where: { medicoId, dia_semana: diaSemana } });
+
+  if (!horarioDelDia) {
+    throw createAppError("El médico no tiene un horario de trabajo definido para el día seleccionado.", HTTP_STATUS.BAD_REQUEST);
+  }
+
+  const [inicioH, inicioM] = horarioDelDia.hora_inicio.split(":").map(Number);
+  const horaInicioMin = inicioH * 60 + inicioM;
+  const [finH, finM] = horarioDelDia.hora_fin.split(":").map(Number);
+  const horaFinMin = finH * 60 + finM;
+
+  if (horaCitaEnMinutos < horaInicioMin || horaCitaEnMinutos + duracionCitaMin > horaFinMin) {
+    throw createAppError(
+      `El horario solicitado está fuera del horario laboral del médico (${horarioDelDia.hora_inicio} - ${horarioDelDia.hora_fin}).`,
+      HTTP_STATUS.BAD_REQUEST
+    );
   }
 
   const fechaFinCita = new Date(fechaCita.getTime() + duracionCitaMin * 60000);

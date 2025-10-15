@@ -1,43 +1,53 @@
-# Clínica SaludTotal - Proyecto de Gestión
+# Clínica SaludTotal - Proyecto de Gestión de Citas
 
-Este proyecto contiene el backend (API) y el frontend (UI) para el sistema de gestión de citas de la Clínica SaludTotal.
+Este repositorio contiene el backend (API en Node.js/Express) y el frontend (UI en React/Vite) para el sistema de gestión de la Clínica SaludTotal. El proyecto está completamente dockerizado para una configuración de desarrollo rápida y consistente.
 
 ## Requisitos Previos
 
+- Git
 - Docker
 - Docker Compose
-- Node.js v18 o superior (para desarrollo local si no se usa Docker)
 
-## Configuración Inicial del Entorno (Docker)
+## Puesta en Marcha (Quick Start)
 
-1.  **Clonar el repositorio:**
+Sigue estos pasos para levantar todo el entorno de desarrollo. El proceso está diseñado para ser lo más simple posible: clonar, configurar y ejecutar.
 
-    ```bash
-    git clone <URL_DEL_REPOSITORIO>
-    cd clinica-saludtotal
-    ```
+**1. Clonar el Repositorio**
 
-2.  **Configurar variables de entorno:**
-    Copia el archivo de ejemplo de la API y ajústalo si es necesario. Por defecto, funcionará con la configuración de Docker.
+```bash
+git clone <URL_DEL_REPOSITORIO>
+cd clinica-saludtotal
+```
 
-    ```bash
-    cp api/.env.example api/.env
-    ```
+**2. Configurar Variables de Entorno**
+La API necesita un archivo `.env` para funcionar. Simplemente copia la plantilla de ejemplo. Los valores por defecto están preconfigurados para funcionar con Docker.
 
-3.  **Levantar los servicios:**
-    Este comando construirá las imágenes de Docker (si no existen) y levantará los contenedores de la base de datos, la API y la interfaz de usuario.
+```bash
+cp api/.env.example api/.env
+```
 
-    ```bash
-    docker-compose up --build -d
-    ```
+**3. Levantar los Servicios con Docker Compose**
+Este único comando construirá las imágenes de Docker, creará los contenedores, establecerá la red entre ellos y los iniciará.
 
-    - La API estará disponible en `http://localhost:3001`
-    - La UI estará disponible en `http://localhost:5173`
-    - La base de datos PostgreSQL estará expuesta en el puerto `5432`
+```bash
+docker-compose up --build -d
+```
 
-## Comandos Útiles de Docker
+- `--build`: Es importante para la primera vez, ya que construye las imágenes desde los `Dockerfile`.
+- `-d`: Ejecuta los contenedores en segundo plano (detached mode).
 
-A continuación se listan comandos para gestionar el ciclo de vida del entorno de desarrollo.
+**¡Listo! El entorno ya está funcionando.**
+
+- **API Backend:** Disponible en `http://localhost:3001`
+- **UI Frontend:** Disponible en `http://localhost:5173`
+
+> **Nota sobre la Base de Datos:** En el primer arranque, la API detectará que la base de datos está vacía, creará todas las tablas y la poblará automáticamente con un conjunto completo de datos de prueba (administradores, médicos con sus horarios, pacientes y citas futuras). Puedes ver este proceso en los logs de la API.
+
+---
+
+## Gestión del Entorno de Desarrollo
+
+Estos comandos te ayudarán a gestionar el ciclo de vida de tu entorno Docker.
 
 #### Iniciar y Detener Servicios
 
@@ -52,49 +62,52 @@ A continuación se listan comandos para gestionar el ciclo de vida del entorno d
   docker-compose down
   ```
 
-#### Gestión de la Base de Datos
+#### Reiniciar el Entorno Desde Cero (Borrar Todo)
 
-- **Reiniciar la base de datos desde cero (elimina todos los datos):**
-  Este comando detiene los contenedores y elimina los volúmenes, incluyendo el de la base de datos.
+Si necesitas una pizarra limpia, este comando es tu mejor aliado. Detendrá los contenedores y **eliminará los volúmenes de datos (incluida la base de datos)**.
 
-  ```bash
-  docker-compose down -v
-  ```
+```bash
+docker-compose down -v
+```
 
-  Luego, para volver a levantar todo:
+Después de ejecutarlo, simplemente vuelve a levantar todo con `docker-compose up --build -d` para tener un entorno fresco y con los datos de prueba iniciales.
 
-  ```bash
-  docker-compose up --build -d
-  ```
+#### Ver Logs en Tiempo Real
 
-- **Poblar la base de datos con datos de prueba (sin borrarla):**
-  Si la base de datos está vacía o quieres restaurar los datos iniciales, puedes ejecutar el script de inicialización.
-  ```bash
-  docker-compose exec api npm run db:reset
-  ```
+Esencial para depurar. Abre una terminal separada para cada servicio que quieras monitorear.
 
-#### Visualización de Logs
-
-- **Ver los logs de la API en tiempo real:**
+- **Logs de la API:**
 
   ```bash
   docker-compose logs -f api
   ```
 
-- **Ver los logs de la UI en tiempo real:**
+- **Logs de la UI:**
   ```bash
   docker-compose logs -f ui
   ```
 
-#### Acceder a un Contenedor
+#### Ejecutar Comandos Dentro de un Contenedor
 
-- **Entrar a la terminal del contenedor de la API:**
+- **Acceder a la terminal de la API:**
 
   ```bash
   docker-compose exec api sh
   ```
 
-- **Conectarse a la base de datos usando `psql`:**
+  _Desde aquí puedes ejecutar comandos de `npm`, como `npm run db:reset` si quisieras repoblar la base de datos manualmente._
+
+- **Conectarse a la base de datos con `psql`:**
   ```bash
   docker-compose exec db psql -U postgres -d clinica_db
   ```
+
+---
+
+## Flujo de Pruebas con Postman
+
+1.  **Importa la Colección:** Abre Postman e importa el archivo `Clinica.postman_collection.json` que se encuentra en el repositorio.
+2.  **Verifica la Variable `baseUrl`:** La colección ya incluye una variable `baseUrl` preconfigurada a `http://localhost:3001/api`. No necesitas cambiarla si usas la configuración por defecto.
+3.  **Prueba el Flujo:**
+    - Ve a la carpeta `Auth (Autenticación)` y ejecuta una de las peticiones de `Login` (ej. `POST Login Admin`). El script de la petición guardará el token JWT automáticamente.
+    - Ahora puedes ejecutar cualquier petición de las carpetas protegidas (ej. `Flujo Admin`) y la autenticación funcionará sin que tengas que hacer nada más.

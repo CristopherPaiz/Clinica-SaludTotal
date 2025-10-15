@@ -58,7 +58,7 @@ export const actualizarMedico = catchAsync(async (req, res, next) => {
   });
 });
 
-export const eliminarMedico = catchAsync(async (req, res, next) => {
+export const eliminarMedicoController = catchAsync(async (req, res, next) => {
   await eliminarMedico(req.params.id);
   res.status(HTTP_STATUS.NO_CONTENT).json({
     status: "success",
@@ -89,7 +89,7 @@ export const actualizarPaciente = catchAsync(async (req, res, next) => {
   });
 });
 
-export const eliminarPaciente = catchAsync(async (req, res, next) => {
+export const eliminarPacienteController = catchAsync(async (req, res, next) => {
   await eliminarPaciente(req.params.id);
   res.status(HTTP_STATUS.NO_CONTENT).json({
     status: "success",
