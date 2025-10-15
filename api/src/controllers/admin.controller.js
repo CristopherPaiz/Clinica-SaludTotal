@@ -1,12 +1,12 @@
-import * as usuarioService from "../services/usuario.service.js";
-import * as medicoService from "../services/medico.service.js";
-import * as pacienteService from "../services/paciente.service.js";
+import { buscarTodosLosUsuarios, registrarNuevoMedico, registrarNuevoPaciente } from "../services/usuario.service.js";
+import { buscarMedicoPorId, modificarMedico, eliminarMedico } from "../services/medico.service.js";
+import { buscarPacientePorId, modificarPaciente, eliminarPaciente } from "../services/paciente.service.js";
 import catchAsync from "../utils/catchAsync.js";
 import { createAppError } from "../utils/appError.js";
 import { HTTP_STATUS } from "../dictionaries/index.js";
 
 export const listarUsuarios = catchAsync(async (req, res, next) => {
-  const usuarios = await usuarioService.buscarTodosLosUsuarios(req.query);
+  const usuarios = await buscarTodosLosUsuarios(req.query);
   res.status(HTTP_STATUS.OK).json({
     status: "success",
     data: {
@@ -16,7 +16,7 @@ export const listarUsuarios = catchAsync(async (req, res, next) => {
 });
 
 export const crearNuevoMedico = catchAsync(async (req, res, next) => {
-  const nuevoMedico = await usuarioService.registrarNuevoMedico(req.body);
+  const nuevoMedico = await registrarNuevoMedico(req.body);
   res.status(HTTP_STATUS.CREATED).json({
     status: "success",
     data: {
@@ -26,7 +26,7 @@ export const crearNuevoMedico = catchAsync(async (req, res, next) => {
 });
 
 export const crearNuevoPaciente = catchAsync(async (req, res, next) => {
-  const nuevoPaciente = await usuarioService.registrarNuevoPaciente(req.body);
+  const nuevoPaciente = await registrarNuevoPaciente(req.body);
   res.status(HTTP_STATUS.CREATED).json({
     status: "success",
     data: {
@@ -36,7 +36,7 @@ export const crearNuevoPaciente = catchAsync(async (req, res, next) => {
 });
 
 export const obtenerMedicoPorId = catchAsync(async (req, res, next) => {
-  const medico = await medicoService.buscarMedicoPorId(req.params.id);
+  const medico = await buscarMedicoPorId(req.params.id);
   if (!medico) {
     return next(createAppError("No se encontró un médico con ese ID", HTTP_STATUS.NOT_FOUND));
   }
@@ -49,7 +49,7 @@ export const obtenerMedicoPorId = catchAsync(async (req, res, next) => {
 });
 
 export const actualizarMedico = catchAsync(async (req, res, next) => {
-  const medicoActualizado = await medicoService.modificarMedico(req.params.id, req.body);
+  const medicoActualizado = await modificarMedico(req.params.id, req.body);
   res.status(HTTP_STATUS.OK).json({
     status: "success",
     data: {
@@ -59,7 +59,7 @@ export const actualizarMedico = catchAsync(async (req, res, next) => {
 });
 
 export const eliminarMedico = catchAsync(async (req, res, next) => {
-  await medicoService.eliminarMedico(req.params.id);
+  await eliminarMedico(req.params.id);
   res.status(HTTP_STATUS.NO_CONTENT).json({
     status: "success",
     data: null,
@@ -67,7 +67,7 @@ export const eliminarMedico = catchAsync(async (req, res, next) => {
 });
 
 export const obtenerPacientePorId = catchAsync(async (req, res, next) => {
-  const paciente = await pacienteService.buscarPacientePorId(req.params.id);
+  const paciente = await buscarPacientePorId(req.params.id);
   if (!paciente) {
     return next(createAppError("No se encontró un paciente con ese ID", HTTP_STATUS.NOT_FOUND));
   }
@@ -80,7 +80,7 @@ export const obtenerPacientePorId = catchAsync(async (req, res, next) => {
 });
 
 export const actualizarPaciente = catchAsync(async (req, res, next) => {
-  const pacienteActualizado = await pacienteService.modificarPaciente(req.params.id, req.body, req.usuario);
+  const pacienteActualizado = await modificarPaciente(req.params.id, req.body, req.usuario);
   res.status(HTTP_STATUS.OK).json({
     status: "success",
     data: {
@@ -90,7 +90,7 @@ export const actualizarPaciente = catchAsync(async (req, res, next) => {
 });
 
 export const eliminarPaciente = catchAsync(async (req, res, next) => {
-  await pacienteService.eliminarPaciente(req.params.id);
+  await eliminarPaciente(req.params.id);
   res.status(HTTP_STATUS.NO_CONTENT).json({
     status: "success",
     data: null,

@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import * as authService from "../services/auth.service.js";
-import * as usuarioService from "../services/usuario.service.js";
+import { buscarUsuarioPorUsername } from "../services/auth.service.js";
+import { registrarNuevoPaciente } from "../services/usuario.service.js";
 import catchAsync from "../utils/catchAsync.js";
 import { createAppError } from "../utils/appError.js";
 import { HTTP_STATUS } from "../dictionaries/index.js";
@@ -40,7 +40,7 @@ export const iniciarSesion = catchAsync(async (req, res, next) => {
     return next(createAppError("Por favor, proporciona usuario y contraseña.", HTTP_STATUS.BAD_REQUEST));
   }
 
-  const usuario = await authService.buscarUsuarioPorUsername(username);
+  const usuario = await buscarUsuarioPorUsername(username);
 
   if (!usuario || !(await bcrypt.compare(password, usuario.password_hash))) {
     return next(createAppError("Credenciales inválidas.", HTTP_STATUS.UNAUTHORIZED));
@@ -50,7 +50,7 @@ export const iniciarSesion = catchAsync(async (req, res, next) => {
 });
 
 export const registrarPaciente = catchAsync(async (req, res, next) => {
-  const nuevoUsuario = await usuarioService.registrarNuevoPaciente(req.body);
+  const nuevoUsuario = await registrarNuevoPaciente(req.body);
   firmarTokenYEnviarCookie(nuevoUsuario, HTTP_STATUS.CREATED, res);
 });
 

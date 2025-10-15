@@ -1,9 +1,9 @@
-import * as citaService from "../services/cita.service.js";
+import { buscarCitas, crearNuevaCita, modificarCita, cancelarCita } from "../services/cita.service.js";
 import catchAsync from "../utils/catchAsync.js";
 import { HTTP_STATUS } from "../dictionaries/index.js";
 
 export const obtenerCitas = catchAsync(async (req, res, next) => {
-  const citas = await citaService.buscarCitas(req.query, req.usuario);
+  const citas = await buscarCitas(req.query, req.usuario);
   res.status(HTTP_STATUS.OK).json({
     status: "success",
     data: {
@@ -13,7 +13,7 @@ export const obtenerCitas = catchAsync(async (req, res, next) => {
 });
 
 export const crearCita = catchAsync(async (req, res, next) => {
-  const nuevaCita = await citaService.crearNuevaCita(req.body, req.usuario);
+  const nuevaCita = await crearNuevaCita(req.body, req.usuario);
   res.status(HTTP_STATUS.CREATED).json({
     status: "success",
     data: {
@@ -24,7 +24,7 @@ export const crearCita = catchAsync(async (req, res, next) => {
 
 export const actualizarCita = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  const citaActualizada = await citaService.modificarCita(id, req.body, req.usuario);
+  const citaActualizada = await modificarCita(id, req.body, req.usuario);
   res.status(HTTP_STATUS.OK).json({
     status: "success",
     data: {
@@ -35,7 +35,7 @@ export const actualizarCita = catchAsync(async (req, res, next) => {
 
 export const cancelarCita = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-  await citaService.cancelarCita(id, req.usuario);
+  await cancelarCita(id, req.usuario);
   res.status(HTTP_STATUS.NO_CONTENT).json({
     status: "success",
     data: null,
