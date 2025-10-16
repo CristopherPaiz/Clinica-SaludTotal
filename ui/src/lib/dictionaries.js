@@ -1,0 +1,63 @@
+export const ROLES = {
+  ADMIN: 1,
+  MEDICO: 2,
+  PACIENTE: 3,
+};
+
+export const NOMBRES_ROLES = {
+  [ROLES.ADMIN]: "Administrador",
+  [ROLES.MEDICO]: "Médico",
+  [ROLES.PACIENTE]: "Paciente",
+};
+
+export const CITA_ESTADOS = {
+  PENDIENTE: 1,
+  CONFIRMADA: 2,
+  ATENDIDA: 3,
+  CANCELADA: 4,
+};
+
+export const NOMBRES_ESTADOS_CITA = {
+  [CITA_ESTADOS.PENDIENTE]: "Pendiente",
+  [CITA_ESTADOS.CONFIRMADA]: "Confirmada",
+  [CITA_ESTADOS.ATENDIDA]: "Atendida",
+  [CITA_ESTADOS.CANCELADA]: "Cancelada",
+};
+
+export const COLORES_ESTADOS_CITA = {
+  [CITA_ESTADOS.PENDIENTE]: "default",
+  [CITA_ESTADOS.CONFIRMADA]: "secondary",
+  [CITA_ESTADOS.ATENDIDA]: "outline",
+  [CITA_ESTADOS.CANCELADA]: "destructive",
+};
+
+export const DIAS_SEMANA = {
+  1: "Lunes",
+  2: "Martes",
+  3: "Miércoles",
+  4: "Jueves",
+  5: "Viernes",
+  6: "Sábado",
+  0: "Domingo",
+};
+
+export const RUTAS_API = {
+  AUTH: {
+    LOGIN: "/auth/login",
+    REGISTRO: "/auth/register",
+    PERFIL: "/auth/me",
+    LOGOUT: "/auth/logout",
+  },
+  CONFIGURACION: "/configuracion",
+  MEDICOS: "/medicos",
+  CITAS: "/citas",
+  PACIENTES: {
+    BASE: "/pacientes",
+    PERFIL: "/pacientes/me",
+  },
+  ADMIN: {
+    USUARIOS: "/admin/usuarios",
+    MEDICOS: "/admin/medicos",
+    PACIENTES: "/admin/pacientes",
+  },
+};

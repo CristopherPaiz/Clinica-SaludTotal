@@ -45,10 +45,14 @@ services:
     container_name: clinica_ui
     restart: always
     ports:
-      - "${UI_PORT}:5173"
+      - "5173:80"
     volumes:
       - ./ui:/app
       - /app/node_modules
+    environment:
+      - VITE_API_URL=http://api:3001/api
+    depends_on:
+      - api
     networks:
       - clinica-net
 

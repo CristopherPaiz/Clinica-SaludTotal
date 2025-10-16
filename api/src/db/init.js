@@ -1,9 +1,6 @@
 import { fileURLToPath } from "url";
 import db from "../models/index.js";
-import bcrypt from "bcryptjs";
 import { ROLES, CITA_ESTADOS } from "../dictionaries/index.js";
-
-const hashPassword = (password) => bcrypt.hash(password, 10);
 
 export const inicializarBaseDeDatos = async () => {
   try {
@@ -37,12 +34,12 @@ export const inicializarBaseDeDatos = async () => {
     const now = new Date();
     const usuarios = await db.Usuario.bulkCreate(
       [
-        { username: "admin", password_hash: await hashPassword("admin123"), rol: ROLES.ADMIN, createdAt: now, updatedAt: now },
-        { username: "superadmin", password_hash: await hashPassword("superadmin123"), rol: ROLES.ADMIN, createdAt: now, updatedAt: now },
-        { username: "cmorales", password_hash: await hashPassword("medico123"), rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
-        { username: "acastillo", password_hash: await hashPassword("medico123"), rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
-        { username: "lvega", password_hash: await hashPassword("medico123"), rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
-        { username: "jbarrios", password_hash: await hashPassword("medico123"), rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
+        { username: "admin", password_hash: "admin123", rol: ROLES.ADMIN, createdAt: now, updatedAt: now },
+        { username: "superadmin", password_hash: "superadmin123", rol: ROLES.ADMIN, createdAt: now, updatedAt: now },
+        { username: "cmorales", password_hash: "medico123", rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
+        { username: "acastillo", password_hash: "medico123", rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
+        { username: "lvega", password_hash: "medico123", rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
+        { username: "jbarrios", password_hash: "medico123", rol: ROLES.MEDICO, createdAt: now, updatedAt: now },
         ...Array.from({ length: 10 }, (_, i) => ({
           username: `paciente${i + 1}`,
           password_hash: "user123",
