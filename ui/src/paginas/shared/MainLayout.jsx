@@ -2,7 +2,7 @@ import { Outlet, Link } from "react-router-dom";
 import { Header } from "@/components/common/Header";
 import { Footer } from "@/components/common/Footer";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button.jsx";
 import { Clock, CalendarDays } from "lucide-react";
 import { useGetQuery } from "@/hooks/useGetQuery";
 import { RUTAS_API } from "@/lib/dictionaries";
