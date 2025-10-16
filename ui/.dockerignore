@@ -1,0 +1,16 @@
+# Ignorar dependencias, se instalan en el contenedor
+node_modules
+
+# Ignorar el directorio de build local
+dist
+build
+
+# Ignorar variables de entorno locales
+.env
+.env.*
+!/.env.example
+
+# Ignorar archivos de log y temporales
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
