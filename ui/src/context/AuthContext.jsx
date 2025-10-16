@@ -13,6 +13,7 @@ export function AuthProvider({ children }) {
 
   const { data, isSuccess, isError } = useGetQuery(["usuarioActual"], RUTAS_API.AUTH.PERFIL, {
     retry: false,
+    showErrorToast: false,
     refetchOnWindowFocus: false,
     enabled: !estaAutenticado,
   });

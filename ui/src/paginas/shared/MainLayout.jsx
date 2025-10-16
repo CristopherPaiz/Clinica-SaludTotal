@@ -7,6 +7,7 @@ import { Clock, CalendarDays } from "lucide-react";
 import { useGetQuery } from "@/hooks/useGetQuery";
 import { RUTAS_API } from "@/lib/dictionaries";
 import { Separator } from "@/components/ui/separator";
+import ErrorBoundary from "@/components/common/ErrorBoundary";
 
 function EtiquetaHorarios() {
   const { data } = useGetQuery(["configuracionPublica"], RUTAS_API.CONFIGURACION);
@@ -75,7 +76,9 @@ export function MainLayout() {
       <Header />
       <EtiquetaHorarios />
       <main className="flex-grow">
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
       <Footer />
     </div>

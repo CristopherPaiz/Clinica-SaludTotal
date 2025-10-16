@@ -61,3 +61,11 @@ export const eliminarPaciente = async (id) => {
   await Usuario.destroy({ where: { id: paciente.usuarioId } });
   return await paciente.destroy();
 };
+
+export const buscarHistorialCitasPorPacienteId = async (pacienteId) => {
+  return await db.Cita.findAll({
+    where: { pacienteId },
+    include: [{ model: db.Medico, as: "medico", attributes: ["nombre_completo"] }],
+    order: [["fecha_hora", "DESC"]],
+  });
+};

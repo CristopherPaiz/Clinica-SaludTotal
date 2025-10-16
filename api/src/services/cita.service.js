@@ -35,7 +35,7 @@ export const buscarCitas = async (query, usuario) => {
     where: whereClause,
     include: [
       { model: Medico, as: "medico", attributes: ["id", "nombre_completo", "especialidad"] },
-      { model: Paciente, as: "paciente", attributes: ["id", "nombre_completo"] },
+      { model: Paciente, as: "paciente", attributes: ["id", "nombre_completo", "email", "telefono", "dpi"] },
     ],
     limit,
     offset,

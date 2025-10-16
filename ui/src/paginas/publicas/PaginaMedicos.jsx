@@ -6,22 +6,26 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { ContainerLoader } from "@/components/common/Loader";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Stethoscope, UserSearch } from "lucide-react";
+import { Stethoscope, UserSearch, Award } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function TarjetaMedico({ medico }) {
   return (
-    <Card>
-      <CardHeader className="flex-row items-center gap-4">
-        <div className="bg-primary/10 p-3 rounded-full">
-          <Stethoscope className="w-6 h-6 text-primary" />
-        </div>
-        <div>
-          <CardTitle className="text-lg">{medico.nombre_completo}</CardTitle>
-          <CardDescription>{medico.especialidad}</CardDescription>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-muted-foreground">Colegiado: {medico.colegiado}</p>
+    <Card className="text-center hover:shadow-lg transition-shadow">
+      <CardContent className="pt-6">
+        <Avatar className="w-28 h-28 mx-auto mb-4 border-4 border-primary/10">
+          <AvatarImage src={`https://avatar.iran.liara.run/public/boy?username=${medico.nombre_completo}`} alt={medico.nombre_completo} />
+          <AvatarFallback>{medico.nombre_completo.substring(0, 2)}</AvatarFallback>
+        </Avatar>
+        <CardTitle className="text-xl">{medico.nombre_completo}</CardTitle>
+        <CardDescription className="text-primary font-medium flex items-center justify-center gap-2 pt-1">
+          <Stethoscope className="w-4 h-4" />
+          {medico.especialidad}
+        </CardDescription>
+        <p className="text-xs text-muted-foreground mt-2 flex items-center justify-center gap-1">
+          <Award className="w-3 h-3" />
+          Colegiado: {medico.colegiado}
+        </p>
       </CardContent>
     </Card>
   );
@@ -43,7 +47,7 @@ export function PaginaMedicos() {
         <p className="text-muted-foreground mt-2">Conoce a los profesionales dedicados a tu salud.</p>
       </div>
 
-      <div className="mb-6 max-w-md mx-auto">
+      <div className="mb-8 max-w-md mx-auto">
         <div className="relative">
           <UserSearch className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
@@ -66,7 +70,7 @@ export function PaginaMedicos() {
       {!isLoading && !isError && (
         <>
           {medicos.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {medicos.map((medico) => (
                 <TarjetaMedico key={medico.id} medico={medico} />
               ))}

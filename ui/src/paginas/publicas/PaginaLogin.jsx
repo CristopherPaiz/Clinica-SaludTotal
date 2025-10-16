@@ -4,10 +4,11 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { esquemaLogin } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Loader2, Stethoscope } from "lucide-react";
+import { Loader2, Stethoscope, Shield, User, UserCircle } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 export function PaginaLogin() {
   const navegar = useNavigate();
@@ -27,13 +28,18 @@ export function PaginaLogin() {
     }
   };
 
+  const handleQuickLogin = (username, password) => {
+    form.setValue("username", username, { shouldValidate: true });
+    form.setValue("password", password, { shouldValidate: true });
+  };
+
   return (
     <div className="w-full lg:grid lg:min-h-[calc(100vh-4rem)] lg:grid-cols-2 xl:min-h-[calc(100vh-4rem)]">
       <div className="flex items-center justify-center py-12 px-4">
         <div className="mx-auto w-full max-w-md space-y-6">
           <div className="text-center">
             <h1 className="text-3xl font-bold">Bienvenido de Nuevo</h1>
-            <p className="text-muted-foreground">Ingresa tus credenciales para acceder a tu portal de paciente.</p>
+            <p className="text-muted-foreground">Ingresa tus credenciales para acceder a tu portal.</p>
           </div>
           <Card>
             <CardContent className="pt-6">
@@ -65,6 +71,29 @@ export function PaginaLogin() {
                       </FormItem>
                     )}
                   />
+
+                  {/* INICIO: Sección para login rápido (DEMO) - Quitar en producción */}
+                  <div className="space-y-3 pt-2">
+                    <div className="relative">
+                      <Separator />
+                      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-center">
+                        <span className="bg-card px-2 text-xs text-muted-foreground">Acceso rápido (Demo)</span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button type="button" variant="outline" size="sm" onClick={() => handleQuickLogin("admin", "admin123")}>
+                        <Shield className="mr-2 h-4 w-4" /> Admin
+                      </Button>
+                      <Button type="button" variant="outline" size="sm" onClick={() => handleQuickLogin("cmorales", "medico123")}>
+                        <User className="mr-2 h-4 w-4" /> Médico
+                      </Button>
+                      <Button type="button" variant="outline" size="sm" onClick={() => handleQuickLogin("paciente1", "user123")}>
+                        <UserCircle className="mr-2 h-4 w-4" /> Paciente
+                      </Button>
+                    </div>
+                  </div>
+                  {/* FIN: Sección para login rápido (DEMO) */}
+
                   <Button type="submit" className="w-full" disabled={cargando}>
                     {cargando && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Ingresar

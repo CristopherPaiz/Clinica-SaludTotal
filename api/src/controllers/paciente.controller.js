@@ -1,4 +1,4 @@
-import { buscarTodosLosPacientes, buscarMiPerfil, modificarPaciente } from "../services/paciente.service.js";
+import { buscarTodosLosPacientes, buscarMiPerfil, modificarPaciente, buscarHistorialCitasPorPacienteId } from "../services/paciente.service.js";
 import catchAsync from "../utils/catchAsync.js";
 import { createAppError } from "../utils/appError.js";
 import { HTTP_STATUS } from "../dictionaries/index.js";
@@ -32,6 +32,17 @@ export const actualizarMiPerfil = catchAsync(async (req, res, next) => {
     status: "success",
     data: {
       paciente: pacienteActualizado,
+    },
+  });
+});
+
+export const obtenerHistorialCitas = catchAsync(async (req, res, next) => {
+  const { pacienteId } = req.params;
+  const citas = await buscarHistorialCitasPorPacienteId(pacienteId);
+  res.status(HTTP_STATUS.OK).json({
+    status: "success",
+    data: {
+      citas,
     },
   });
 });

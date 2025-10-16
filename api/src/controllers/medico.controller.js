@@ -1,4 +1,4 @@
-import { buscarTodosLosMedicos, buscarMiPerfil } from "../services/medico.service.js";
+import { buscarTodosLosMedicos, buscarMiPerfil, buscarCitasOcupadasPorDia } from "../services/medico.service.js";
 import catchAsync from "../utils/catchAsync.js";
 import { createAppError } from "../utils/appError.js";
 import { HTTP_STATUS } from "../dictionaries/index.js";
@@ -22,6 +22,21 @@ export const obtenerMiPerfil = catchAsync(async (req, res, next) => {
     status: "success",
     data: {
       medico,
+    },
+  });
+});
+
+export const obtenerCitasOcupadasPorDia = catchAsync(async (req, res, next) => {
+  const { medicoId } = req.params;
+  const { fecha } = req.query;
+  if (!fecha) {
+    return next(createAppError("Se requiere una fecha.", HTTP_STATUS.BAD_REQUEST));
+  }
+  const citas = await buscarCitasOcupadasPorDia(medicoId, fecha);
+  res.status(HTTP_STATUS.OK).json({
+    status: "success",
+    data: {
+      citas,
     },
   });
 });

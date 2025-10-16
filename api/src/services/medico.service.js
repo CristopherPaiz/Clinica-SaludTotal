@@ -1,8 +1,9 @@
 import db from "../models/index.js";
 import { Op } from "sequelize";
 import { createAppError } from "../utils/appError.js";
+import { CITA_ESTADOS } from "../dictionaries/index.js";
 
-const { Medico, Usuario } = db;
+const { Medico, Usuario, Cita } = db;
 
 export const buscarTodosLosMedicos = async (query) => {
   const { q, especialidad } = query;
@@ -47,4 +48,22 @@ export const eliminarMedico = async (id) => {
 
   await Usuario.destroy({ where: { id: medico.usuarioId } });
   return await medico.destroy();
+};
+
+export const buscarCitasOcupadasPorDia = async (medicoId, fecha) => {
+  const inicioDia = new Date(fecha);
+  inicioDia.setUTCHours(0, 0, 0, 0);
+  const finDia = new Date(fecha);
+  finDia.setUTCHours(23, 59, 59, 999);
+
+  return await Cita.findAll({
+    where: {
+      medicoId,
+      fecha_hora: {
+        [Op.between]: [inicioDia, finDia],
+      },
+      estado: { [Op.notIn]: [CITA_ESTADOS.CANCELADA] },
+    },
+    attributes: ["fecha_hora"],
+  });
 };

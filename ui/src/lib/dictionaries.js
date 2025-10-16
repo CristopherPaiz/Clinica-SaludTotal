@@ -51,10 +51,13 @@ export const RUTAS_API = {
   CONFIGURACION: "/configuracion",
   SERVICIOS: "/servicios",
   MEDICOS: "/medicos",
+  HORARIOS_MEDICO: (medicoId) => `/medicos/${medicoId}/horarios`,
+  CITAS_OCUPADAS_MEDICO: (medicoId, fecha) => `/medicos/${medicoId}/citas-ocupadas?fecha=${fecha}`,
   CITAS: "/citas",
   PACIENTES: {
     BASE: "/pacientes",
     PERFIL: "/pacientes/me",
+    HISTORIAL_CITAS: (pacienteId) => `/pacientes/${pacienteId}/citas`,
   },
   ADMIN: {
     USUARIOS: "/admin/usuarios",
