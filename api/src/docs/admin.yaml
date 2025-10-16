@@ -1,0 +1,172 @@
+paths:
+  /api/admin/usuarios:
+    get:
+      summary: Lista todos los usuarios del sistema (Admin)
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: rol
+          schema:
+            type: integer
+          description: "Filtrar por rol (1=Admin, 2=Medico, 3=Paciente)"
+      responses:
+        "200":
+          description: Lista de usuarios
+
+  /api/admin/medicos:
+    post:
+      summary: Crea un nuevo médico con su usuario (Admin)
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username: { type: string }
+                password: { type: string }
+                nombre_completo: { type: string }
+                colegiado: { type: string }
+                especialidad: { type: string }
+      responses:
+        "201":
+          description: Médico creado
+
+  /api/admin/medicos/{id}:
+    get:
+      summary: Obtiene un médico por su ID (Admin)
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Datos del médico
+    put:
+      summary: Actualiza un médico por su ID (Admin)
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre_completo: { type: string }
+                especialidad: { type: string }
+      responses:
+        "200":
+          description: Médico actualizado
+    delete:
+      summary: Elimina un médico por su ID (Admin)
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Médico eliminado
+
+  /api/admin/medicos/{medicoId}/horarios:
+    get:
+      summary: Obtiene los horarios de un médico específico (Admin)
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: medicoId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lista de horarios
+    post:
+      summary: Añade un nuevo horario a un médico (Admin)
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: medicoId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Horario"
+      responses:
+        "201":
+          description: Horario creado
+
+  /api/admin/medicos/{medicoId}/horarios/{horarioId}:
+    put:
+      summary: Actualiza un horario específico (Admin)
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: medicoId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: horarioId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hora_inicio: { type: string }
+                hora_fin: { type: string }
+      responses:
+        "200":
+          description: Horario actualizado
+    delete:
+      summary: Elimina un horario específico (Admin)
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: medicoId
+          required: true
+          schema:
+            type: integer
+        - in: path
+          name: horarioId
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Horario eliminado

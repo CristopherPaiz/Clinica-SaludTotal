@@ -1,0 +1,44 @@
+paths:
+  /api/auth/login:
+    post:
+      summary: Inicia sesión de un usuario
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login exitoso
+        "401":
+          description: Credenciales inválidas
+
+  /api/auth/register:
+    post:
+      summary: Registra un nuevo paciente
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Paciente registrado exitosamente
+        "400":
+          description: Datos inválidos o usuario ya existente
+
+  /api/auth/me:
+    get:
+      summary: Obtiene la información del usuario autenticado
+      tags: [Auth]
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Información del usuario
+        "401":
+          description: No autorizado

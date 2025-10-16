@@ -1,0 +1,79 @@
+paths:
+  /api/citas:
+    get:
+      summary: Obtiene las citas según el rol del usuario
+      tags: [Citas]
+      security:
+        - BearerAuth: []
+      description: "Admin: ve todas. Médico: ve las suyas. Paciente: ve las suyas."
+      parameters:
+        - in: query
+          name: estado
+          schema:
+            type: integer
+          description: "Filtrar por estado (1=Pendiente, 2=Confirmada, etc.)"
+        - in: query
+          name: fecha
+          schema:
+            type: string
+            format: date
+          description: "Filtrar por fecha (YYYY-MM-DD)"
+      responses:
+        "200":
+          description: Lista de citas
+    post:
+      summary: Crea una nueva cita (Paciente)
+      tags: [Citas]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCitaRequest"
+      responses:
+        "201":
+          description: Cita creada exitosamente
+        "400":
+          description: Horario no válido
+        "409":
+          description: Conflicto de horario
+
+  /api/citas/{id}:
+    put:
+      summary: Actualiza una cita existente
+      tags: [Citas]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                estado: { type: integer }
+                nota: { type: string }
+      responses:
+        "200":
+          description: Cita actualizada
+    delete:
+      summary: Cancela una cita
+      tags: [Citas]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Cita cancelada

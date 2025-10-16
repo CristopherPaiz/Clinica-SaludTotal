@@ -1,0 +1,60 @@
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "fail"
+        message:
+          type: string
+          example: "Mensaje de error descriptivo"
+
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "admin"
+        password:
+          type: string
+          example: "admin123"
+
+    RegisterRequest:
+      type: object
+      properties:
+        username: { type: string, example: "nuevopaciente" }
+        password: { type: string, example: "password123" }
+        nombre_completo: { type: string, example: "Ana Lucía Paredes" }
+        dpi: { type: string, example: "3000123450101" }
+        email: { type: string, example: "ana.paredes@example.com" }
+        telefono: { type: string, example: "55559999" }
+
+    CreateCitaRequest:
+      type: object
+      properties:
+        medicoId:
+          type: integer
+          example: 1
+        fecha_hora:
+          type: string
+          format: date-time
+          example: "2025-10-20T09:00:00.000Z"
+
+    Horario:
+      type: object
+      properties:
+        id:
+          type: integer
+        dia_semana:
+          type: integer
+          description: "0=Domingo, 1=Lunes, ..., 6=Sábado"
+          example: 1
+        hora_inicio:
+          type: string
+          example: "08:00"
+        hora_fin:
+          type: string
+          example: "12:00"
+        medicoId:
+          type: integer

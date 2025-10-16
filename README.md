@@ -30,7 +30,7 @@ cp api/.env.example api/.env
 Este único comando construirá las imágenes de Docker, creará los contenedores, establecerá la red entre ellos y los iniciará.
 
 ```bash
-docker-compose up --build -d
+docker-compose up --build
 ```
 
 - `--build`: Es importante para la primera vez, ya que construye las imágenes desde los `Dockerfile`.

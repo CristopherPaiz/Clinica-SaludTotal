@@ -1,0 +1,20 @@
+paths:
+  /api/medicos:
+    get:
+      summary: Obtiene una lista de todos los médicos (Público)
+      tags: [Médicos]
+      responses:
+        "200":
+          description: Lista de médicos
+
+  /api/medicos/me:
+    get:
+      summary: Obtiene el perfil del médico autenticado
+      tags: [Médicos]
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Perfil del médico
+        "401":
+          description: No autorizado

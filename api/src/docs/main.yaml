@@ -1,0 +1,30 @@
+openapi: "3.0.0"
+info:
+  title: "Clínica SaludTotal API"
+  version: "1.0.0"
+  description: "Documentación de la API para el sistema de gestión de citas de la Clínica SaludTotal."
+servers:
+  - url: "http://localhost:3001"
+    description: "Servidor de Desarrollo"
+
+tags:
+  - name: Auth
+    description: Autenticación y registro de usuarios
+  - name: Médicos
+    description: Endpoints para médicos
+  - name: Pacientes
+    description: Endpoints para pacientes
+  - name: Citas
+    description: Gestión de citas
+  - name: Configuración
+    description: Gestión de la configuración pública de la clínica
+  - name: Admin
+    description: Operaciones exclusivas para administradores
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  $ref: "./components.yaml#/components"

@@ -1,0 +1,52 @@
+paths:
+  /api/pacientes:
+    get:
+      summary: Obtiene una lista paginada de pacientes (Admin/Médico)
+      tags: [Pacientes]
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+          description: Término de búsqueda (nombre, dpi, email)
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: Número de página
+        - in: query
+          name: size
+          schema:
+            type: integer
+          description: Tamaño de la página
+      responses:
+        "200":
+          description: Lista de pacientes
+
+  /api/pacientes/me:
+    get:
+      summary: Obtiene el perfil del paciente autenticado
+      tags: [Pacientes]
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: Perfil del paciente
+    put:
+      summary: Actualiza el perfil del paciente autenticado
+      tags: [Pacientes]
+      security:
+        - BearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                telefono: { type: string }
+                direccion: { type: string }
+      responses:
+        "200":
+          description: Perfil actualizado
