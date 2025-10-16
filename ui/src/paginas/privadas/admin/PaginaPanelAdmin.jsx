@@ -1,4 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { GestionMedicos } from "./componentes/GestionMedicos";
+import { GestionPacientes } from "./componentes/GestionPacientes";
+import { GestionConfiguracion } from "./componentes/GestionConfiguracion";
 
 export function PaginaPanelAdmin() {
   return (
@@ -6,10 +10,25 @@ export function PaginaPanelAdmin() {
       <Card>
         <CardHeader>
           <CardTitle>Panel de Administración</CardTitle>
-          <CardDescription>Gestiona médicos, pacientes y citas.</CardDescription>
+          <CardDescription>Gestiona médicos, pacientes, citas y la configuración del sistema.</CardDescription>
         </CardHeader>
         <CardContent>
-          <p>Panel de administración en construcción.</p>
+          <Tabs defaultValue="medicos" className="w-full">
+            <TabsList>
+              <TabsTrigger value="medicos">Médicos</TabsTrigger>
+              <TabsTrigger value="pacientes">Pacientes</TabsTrigger>
+              <TabsTrigger value="configuracion">Configuración</TabsTrigger>
+            </TabsList>
+            <TabsContent value="medicos" className="mt-4">
+              <GestionMedicos />
+            </TabsContent>
+            <TabsContent value="pacientes" className="mt-4">
+              <GestionPacientes />
+            </TabsContent>
+            <TabsContent value="configuracion" className="mt-4">
+              <GestionConfiguracion />
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>

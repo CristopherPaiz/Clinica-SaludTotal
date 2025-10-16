@@ -12,9 +12,8 @@ import { PaginaMisCitas } from "@/paginas/privadas/paciente/PaginaMisCitas";
 import { PaginaNuevaCita } from "@/paginas/privadas/paciente/PaginaNuevaCita";
 import { PaginaMiPerfil } from "@/paginas/privadas/paciente/PaginaMiPerfil";
 
-import { PaginaAgendaMedico } from "@/paginas/privadas/medico/PaginaAgendaMedico";
-
 import { PaginaPanelAdmin } from "@/paginas/privadas/admin/PaginaPanelAdmin";
+import { PaginaAgendaMedico } from "@/paginas/privadas/medico/PaginaAgendaMedico";
 
 const router = createBrowserRouter([
   {
