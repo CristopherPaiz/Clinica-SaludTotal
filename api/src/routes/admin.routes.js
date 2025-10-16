@@ -9,6 +9,7 @@ import {
   obtenerPacientePorId,
   actualizarPaciente,
   eliminarPacienteController,
+  obtenerEstadisticasDashboard,
 } from "../controllers/admin.controller.js";
 import { isAuth } from "../middleware/auth.js";
 import { PERMISOS, TIPOS_PERMISO } from "../utils/permissions.js";
@@ -17,6 +18,8 @@ import horarioRoutes from "./horario.routes.js";
 const router = Router();
 
 router.use(isAuth(PERMISOS.ADMIN_PANEL, TIPOS_PERMISO.LECTURA));
+
+router.get("/dashboard-stats", obtenerEstadisticasDashboard);
 
 router.get("/usuarios", listarUsuarios);
 

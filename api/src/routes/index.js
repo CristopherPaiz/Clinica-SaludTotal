@@ -6,6 +6,7 @@ import citaRoutes from "./citas.routes.js";
 import adminRoutes from "./admin.routes.js";
 import configuracionRoutes from "./configuracion.routes.js";
 import servicioRoutes from "./servicio.routes.js";
+import especialidadRoutes from "./especialidad.routes.js";
 
 const router = Router();
 
@@ -16,5 +17,6 @@ router.use("/citas", citaRoutes);
 router.use("/admin", adminRoutes);
 router.use("/configuracion", configuracionRoutes);
 router.use("/servicios", servicioRoutes);
+router.use("/especialidades", especialidadRoutes);
 
 export default router;

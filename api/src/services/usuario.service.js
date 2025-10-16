@@ -30,10 +30,12 @@ export const buscarTodosLosUsuarios = async (query) => {
 const registrarUsuarioConPerfil = async (datos, rol, modeloPerfil, camposPerfil) => {
   const t = await sequelize.transaction();
   try {
+    const password = datos.password || `${datos.username.toLowerCase()}123`;
+
     const nuevoUsuario = await Usuario.create(
       {
         username: datos.username,
-        password_hash: datos.password,
+        password_hash: password,
         rol: rol,
       },
       { transaction: t }

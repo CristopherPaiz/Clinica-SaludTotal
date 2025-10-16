@@ -8,6 +8,17 @@ export const inicializarBaseDeDatos = async () => {
     await db.sequelize.sync({ force: true });
     console.log("Tablas creadas exitosamente.");
 
+    await db.Especialidad.bulkCreate([
+      { nombre: "Cardiología" },
+      { nombre: "Pediatría" },
+      { nombre: "Dermatología" },
+      { nombre: "Medicina General" },
+      { nombre: "Nutrición" },
+      { nombre: "Psicología" },
+      { nombre: "Ginecología" },
+      { nombre: "Oftalmología" },
+    ]);
+
     await db.Configuracion.create({
       nombre_negocio: "Clínica SaludTotal",
       servicios: "Ofrecemos servicios de Cardiología, Pediatría y Dermatología con profesionales altamente calificados.",

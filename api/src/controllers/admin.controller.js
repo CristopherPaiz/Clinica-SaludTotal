@@ -4,6 +4,9 @@ import { buscarPacientePorId, modificarPaciente, eliminarPaciente } from "../ser
 import catchAsync from "../utils/catchAsync.js";
 import { createAppError } from "../utils/appError.js";
 import { HTTP_STATUS } from "../dictionaries/index.js";
+import { CITA_ESTADOS } from "../dictionaries/index.js";
+import db from "../models/index.js";
+import { Op } from "sequelize";
 
 export const listarUsuarios = catchAsync(async (req, res, next) => {
   const usuarios = await buscarTodosLosUsuarios(req.query);
@@ -94,5 +97,39 @@ export const eliminarPacienteController = catchAsync(async (req, res, next) => {
   res.status(HTTP_STATUS.NO_CONTENT).json({
     status: "success",
     data: null,
+  });
+});
+
+export const obtenerEstadisticasDashboard = catchAsync(async (req, res, next) => {
+  const totalPacientes = await db.Paciente.count();
+  const totalMedicos = await db.Medico.count();
+
+  const inicioHoy = new Date();
+  inicioHoy.setUTCHours(0, 0, 0, 0);
+  const finHoy = new Date();
+  finHoy.setUTCHours(23, 59, 59, 999);
+
+  const citasHoy = await db.Cita.count({
+    where: {
+      fecha_hora: { [Op.between]: [inicioHoy, finHoy] },
+    },
+  });
+
+  const citasPendientes = await db.Cita.count({
+    where: {
+      estado: { [Op.in]: [CITA_ESTADOS.PENDIENTE, CITA_ESTADOS.CONFIRMADA] },
+    },
+  });
+
+  res.status(HTTP_STATUS.OK).json({
+    status: "success",
+    data: {
+      stats: {
+        totalPacientes,
+        totalMedicos,
+        citasHoy,
+        citasPendientes,
+      },
+    },
   });
 });

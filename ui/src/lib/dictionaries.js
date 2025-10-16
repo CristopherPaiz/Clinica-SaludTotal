@@ -60,8 +60,21 @@ export const RUTAS_API = {
     HISTORIAL_CITAS: (pacienteId) => `/pacientes/${pacienteId}/citas`,
   },
   ADMIN: {
+    DASHBOARD_STATS: "/admin/dashboard-stats",
     USUARIOS: "/admin/usuarios",
     MEDICOS: "/admin/medicos",
     PACIENTES: "/admin/pacientes",
   },
+  ESPECIALIDADES: "/especialidades",
 };
+
+export const ESPECIALIDADES_MEDICAS = [
+  "Cardiología",
+  "Pediatría",
+  "Dermatología",
+  "Medicina General",
+  "Nutrición",
+  "Psicología",
+  "Ginecología",
+  "Oftalmología",
+];

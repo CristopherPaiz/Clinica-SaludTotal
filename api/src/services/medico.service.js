@@ -1,7 +1,7 @@
 import db from "../models/index.js";
 import { Op } from "sequelize";
 import { createAppError } from "../utils/appError.js";
-import { CITA_ESTADOS } from "../dictionaries/index.js";
+import { CITA_ESTADOS, HTTP_STATUS } from "../dictionaries/index.js";
 
 const { Medico, Usuario, Cita } = db;
 
@@ -46,8 +46,15 @@ export const eliminarMedico = async (id) => {
   const medico = await Medico.findByPk(id);
   if (!medico) throw createAppError("Médico no encontrado", 404);
 
-  await Usuario.destroy({ where: { id: medico.usuarioId } });
-  return await medico.destroy();
+  try {
+    await Usuario.destroy({ where: { id: medico.usuarioId } });
+    return await medico.destroy();
+  } catch (error) {
+    if (error.name === "SequelizeForeignKeyConstraintError") {
+      throw createAppError("No se puede eliminar al médico porque tiene citas asociadas.", HTTP_STATUS.CONFLICT);
+    }
+    throw error;
+  }
 };
 
 export const buscarCitasOcupadasPorDia = async (medicoId, fecha) => {

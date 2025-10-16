@@ -13,7 +13,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
 
 const esquemaPerfil = z.object({
-  nombre_completo: z.string().min(1, "El nombre es obligatorio."),
+  nombre_completo: z.string().min(3, "El nombre debe tener al menos 3 caracteres."),
+  dpi: z.string().length(13, "El DPI debe tener 13 dígitos.").regex(/^\d+$/, "El DPI solo debe contener números."),
   email: z.string().email("Email inválido."),
   telefono: z.string().min(8, "El teléfono debe tener al menos 8 dígitos."),
   direccion: z.string().optional(),
@@ -50,18 +51,14 @@ export function PaginaMiPerfil() {
 
   const form = useForm({
     resolver: zodResolver(esquemaPerfil),
-    defaultValues: {
-      nombre_completo: "",
-      email: "",
-      telefono: "",
-      direccion: "",
-    },
+    defaultValues: { nombre_completo: "", dpi: "", email: "", telefono: "", direccion: "" },
   });
 
   useEffect(() => {
     if (paciente) {
       form.reset({
         nombre_completo: paciente.nombre_completo || "",
+        dpi: paciente.dpi || "",
         email: paciente.email || "",
         telefono: paciente.telefono || "",
         direccion: paciente.direccion || "",
@@ -70,11 +67,7 @@ export function PaginaMiPerfil() {
   }, [paciente, form]);
 
   const alEnviar = (datos) => {
-    mutacionActualizar.mutate({
-      endpoint: RUTAS_API.PACIENTES.PERFIL,
-      method: "PUT",
-      body: datos,
-    });
+    mutacionActualizar.mutate({ endpoint: RUTAS_API.PACIENTES.PERFIL, method: "PUT", body: datos });
   };
 
   return (
@@ -97,7 +90,20 @@ export function PaginaMiPerfil() {
                     <FormItem>
                       <FormLabel>Nombre Completo</FormLabel>
                       <FormControl>
-                        <Input {...field} disabled />
+                        <Input {...field} disabled={mutacionActualizar.isPending} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dpi"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>DPI</FormLabel>
+                      <FormControl>
+                        <Input {...field} disabled={mutacionActualizar.isPending} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

@@ -42,14 +42,18 @@ export const modificarPaciente = async (id, datosPaciente, usuario) => {
   if (usuario.rol === ROLES.PACIENTE) {
     paciente = await Paciente.findOne({ where: { usuarioId: usuario.id } });
   } else {
+    // Admin
     paciente = await Paciente.findByPk(id);
   }
 
   if (!paciente) throw createAppError("Paciente no encontrado", HTTP_STATUS.NOT_FOUND);
 
   const datosPermitidos = { ...datosPaciente };
-  delete datosPermitidos.usuarioId;
-  delete datosPermitidos.rol;
+
+  if (usuario.rol === ROLES.PACIENTE) {
+    delete datosPermitidos.usuarioId;
+    delete datosPermitidos.rol;
+  }
 
   return await paciente.update(datosPermitidos);
 };
@@ -58,8 +62,15 @@ export const eliminarPaciente = async (id) => {
   const paciente = await Paciente.findByPk(id);
   if (!paciente) throw createAppError("Paciente no encontrado", HTTP_STATUS.NOT_FOUND);
 
-  await Usuario.destroy({ where: { id: paciente.usuarioId } });
-  return await paciente.destroy();
+  try {
+    await Usuario.destroy({ where: { id: paciente.usuarioId } });
+    return await paciente.destroy();
+  } catch (error) {
+    if (error.name === "SequelizeForeignKeyConstraintError") {
+      throw createAppError("No se puede eliminar al paciente porque tiene citas asociadas.", HTTP_STATUS.CONFLICT);
+    }
+    throw error;
+  }
 };
 
 export const buscarHistorialCitasPorPacienteId = async (pacienteId) => {
