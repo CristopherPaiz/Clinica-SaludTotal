@@ -5,6 +5,7 @@ import medicoRoutes from "./medicos.routes.js";
 import citaRoutes from "./citas.routes.js";
 import adminRoutes from "./admin.routes.js";
 import configuracionRoutes from "./configuracion.routes.js";
+import servicioRoutes from "./servicio.routes.js";
 
 const router = Router();
 
@@ -14,5 +15,6 @@ router.use("/medicos", medicoRoutes);
 router.use("/citas", citaRoutes);
 router.use("/admin", adminRoutes);
 router.use("/configuracion", configuracionRoutes);
+router.use("/servicios", servicioRoutes);
 
 export default router;

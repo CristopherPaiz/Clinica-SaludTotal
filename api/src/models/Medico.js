@@ -15,6 +15,7 @@ export default (sequelize) => {
       nombre_completo: { type: DataTypes.STRING, allowNull: false },
       colegiado: { type: DataTypes.STRING, allowNull: false, unique: true },
       especialidad: { type: DataTypes.STRING, allowNull: false },
+      telefono: { type: DataTypes.STRING },
       usuarioId: { type: DataTypes.INTEGER, references: { model: "Usuarios", key: "id" } },
     },
     {

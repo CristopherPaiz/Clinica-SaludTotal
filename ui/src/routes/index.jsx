@@ -7,6 +7,10 @@ import { PaginaInicio } from "@/paginas/publicas/PaginaInicio";
 import { PaginaLogin } from "@/paginas/publicas/PaginaLogin";
 import { PaginaRegistro } from "@/paginas/publicas/PaginaRegistro";
 import { PaginaMedicos } from "@/paginas/publicas/PaginaMedicos";
+import { PaginaServicios } from "@/paginas/publicas/PaginaServicios";
+import { PaginaNosotros } from "@/paginas/publicas/PaginaNosotros";
+import { PaginaGaleria } from "@/paginas/publicas/PaginaGaleria";
+import { PaginaContactos } from "@/paginas/publicas/PaginaContactos";
 
 import { PaginaMisCitas } from "@/paginas/privadas/paciente/PaginaMisCitas";
 import { PaginaNuevaCita } from "@/paginas/privadas/paciente/PaginaNuevaCita";
@@ -24,6 +28,10 @@ const router = createBrowserRouter([
       { path: "login", element: <PaginaLogin /> },
       { path: "registro", element: <PaginaRegistro /> },
       { path: "medicos", element: <PaginaMedicos /> },
+      { path: "servicios", element: <PaginaServicios /> },
+      { path: "nosotros", element: <PaginaNosotros /> },
+      { path: "galeria", element: <PaginaGaleria /> },
+      { path: "contactos", element: <PaginaContactos /> },
       {
         element: <ProtectedRoute rolesPermitidos={[ROLES.PACIENTE]} />,
         children: [

@@ -11,25 +11,36 @@ export const inicializarBaseDeDatos = async () => {
     await db.Configuracion.create({
       nombre_negocio: "Clínica SaludTotal",
       servicios: "Ofrecemos servicios de Cardiología, Pediatría y Dermatología con profesionales altamente calificados.",
-      horarios: "Lunes a Viernes: 8:00 AM - 6:00 PM. Sábados: 9:00 AM - 1:00 PM.",
+      horarios: "Lunes a Viernes: 8:00 AM - 6:00 PM\nSábados: 9:00 AM - 1:00 PM.",
       ubicacion: "Avenida Las Américas 18-81, Zona 14, Ciudad de Guatemala",
       mapa_coordenadas: "14.5881, -90.5133",
       duracion_cita_min: 30,
+      nosotros_texto:
+        "En Clínica SaludTotal, nuestra misión es proporcionar atención médica integral y de alta calidad a nuestros pacientes. Fundada en 2010, hemos crecido hasta convertirnos en un referente de confianza en la comunidad, gracias a nuestro compromiso con la excelencia, la ética profesional y el trato humano. Contamos con un equipo de especialistas dedicados y tecnología de vanguardia para garantizar diagnósticos precisos y tratamientos efectivos.",
       galeria_imagenes: [
         {
           url: "https://images.unsplash.com/photo-1576091160550-2173dba999ef",
-          descripcion: "Equipo médico de última generación para diagnósticos precisos.",
+          descripcion: "Equipo médico de última generación.",
         },
         {
-          url: "https://plus.unsplash.com/premium_photo-1661608181771-15c091904235?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170",
-          descripcion: "Atención pediátrica especializada y amigable para los más pequeños.",
+          url: "https://plus.unsplash.com/premium_photo-1661608181771-15c091904235",
+          descripcion: "Atención pediátrica especializada.",
         },
         {
-          url: "https://images.unsplash.com/photo-1567745566980-4378a3db17fc?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1074",
-          descripcion: "Consultorios cómodos y seguros para tu tranquilidad.",
+          url: "https://images.unsplash.com/photo-1567745566980-4378a3db17fc",
+          descripcion: "Consultorios cómodos y seguros.",
         },
       ],
     });
+
+    await db.Servicio.bulkCreate([
+      { nombre: "Cardiología", descripcion: "Prevención, diagnóstico y tratamiento de enfermedades del corazón.", icono: "HeartPulse" },
+      { nombre: "Pediatría", descripcion: "Atención médica integral para bebés, niños y adolescentes.", icono: "Stethoscope" },
+      { nombre: "Dermatología", descripcion: "Cuidado de la piel, cabello y uñas, tratando diversas afecciones.", icono: "Sparkles" },
+      { nombre: "Medicina General", descripcion: "Atención primaria y continua para pacientes de todas las edades.", icono: "Activity" },
+      { nombre: "Nutrición", descripcion: "Asesoramiento para una alimentación saludable y planes personalizados.", icono: "Salad" },
+      { nombre: "Psicología", descripcion: "Apoyo para el bienestar mental y emocional de nuestros pacientes.", icono: "Brain" },
+    ]);
 
     const now = new Date();
     const usuarios = await db.Usuario.bulkCreate(
@@ -53,10 +64,16 @@ export const inicializarBaseDeDatos = async () => {
 
     const medicos = await db.Medico.bulkCreate(
       [
-        { nombre_completo: "Dr. Carlos Morales", colegiado: "12345", especialidad: "Cardiología", usuarioId: usuarios[2].id },
-        { nombre_completo: "Dra. Ana Sofía Castillo", colegiado: "54321", especialidad: "Pediatría", usuarioId: usuarios[3].id },
-        { nombre_completo: "Dra. Lucía Vega", colegiado: "98765", especialidad: "Dermatología", usuarioId: usuarios[4].id },
-        { nombre_completo: "Dr. Javier Barrios", colegiado: "67890", especialidad: "Cardiología", usuarioId: usuarios[5].id },
+        { nombre_completo: "Dr. Carlos Morales", colegiado: "12345", especialidad: "Cardiología", telefono: "2233-4455", usuarioId: usuarios[2].id },
+        {
+          nombre_completo: "Dra. Ana Sofía Castillo",
+          colegiado: "54321",
+          especialidad: "Pediatría",
+          telefono: "2233-4456",
+          usuarioId: usuarios[3].id,
+        },
+        { nombre_completo: "Dra. Lucía Vega", colegiado: "98765", especialidad: "Dermatología", telefono: "2233-4457", usuarioId: usuarios[4].id },
+        { nombre_completo: "Dr. Javier Barrios", colegiado: "67890", especialidad: "Cardiología", telefono: "2233-4458", usuarioId: usuarios[5].id },
       ],
       { returning: true }
     );

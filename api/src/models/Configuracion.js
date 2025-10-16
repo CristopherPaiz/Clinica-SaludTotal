@@ -13,6 +13,7 @@ export default (sequelize) => {
       mapa_coordenadas: { type: DataTypes.STRING },
       duracion_cita_min: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 30 },
       galeria_imagenes: { type: DataTypes.JSONB },
+      nosotros_texto: { type: DataTypes.TEXT },
     },
     {
       sequelize,

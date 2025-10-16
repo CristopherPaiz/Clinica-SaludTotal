@@ -49,6 +49,7 @@ export const RUTAS_API = {
     LOGOUT: "/auth/logout",
   },
   CONFIGURACION: "/configuracion",
+  SERVICIOS: "/servicios",
   MEDICOS: "/medicos",
   CITAS: "/citas",
   PACIENTES: {

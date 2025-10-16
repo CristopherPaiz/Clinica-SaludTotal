@@ -17,7 +17,7 @@ export const buscarTodosLosMedicos = async (query) => {
 
   return await Medico.findAll({
     where: whereClause,
-    attributes: ["id", "nombre_completo", "especialidad", "colegiado"],
+    attributes: ["id", "nombre_completo", "especialidad", "colegiado", "telefono"],
     order: [["nombre_completo", "ASC"]],
   });
 };
