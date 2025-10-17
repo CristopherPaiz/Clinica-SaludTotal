@@ -1,48 +1,3 @@
-import db from "../models/index.js";
-import { Op } from "sequelize";
-import { ROLES, CITA_ESTADOS, HTTP_STATUS } from "../dictionaries/index.js";
-import { createAppError } from "../utils/appError.js";
-
-const { Cita, Paciente, Medico, Configuracion, HorarioMedico } = db;
-
-export const buscarCitas = async (query, usuario) => {
-  const { page = 1, size = 10, estado, medicoId, fecha } = query;
-  const limit = parseInt(size);
-  const offset = (parseInt(page) - 1) * limit;
-
-  const whereClause = {};
-  if (estado) whereClause.estado = estado;
-  if (medicoId) whereClause.medicoId = medicoId;
-  if (fecha) {
-    const startOfDay = new Date(fecha);
-    startOfDay.setUTCHours(0, 0, 0, 0);
-    const endOfDay = new Date(fecha);
-    endOfDay.setUTCHours(23, 59, 59, 999);
-    whereClause.fecha_hora = { [Op.between]: [startOfDay, endOfDay] };
-  }
-
-  if (usuario.rol === ROLES.PACIENTE) {
-    const paciente = await Paciente.findOne({ where: { usuarioId: usuario.id } });
-    if (!paciente) throw createAppError("Perfil de paciente no encontrado.", HTTP_STATUS.NOT_FOUND);
-    whereClause.pacienteId = paciente.id;
-  } else if (usuario.rol === ROLES.MEDICO) {
-    const medico = await Medico.findOne({ where: { usuarioId: usuario.id } });
-    if (!medico) throw createAppError("Perfil de médico no encontrado.", HTTP_STATUS.NOT_FOUND);
-    whereClause.medicoId = medico.id;
-  }
-
-  return await Cita.findAndCountAll({
-    where: whereClause,
-    include: [
-      { model: Medico, as: "medico", attributes: ["id", "nombre_completo", "especialidad"] },
-      { model: Paciente, as: "paciente", attributes: ["id", "nombre_completo", "email", "telefono", "dpi"] },
-    ],
-    limit,
-    offset,
-    order: [["fecha_hora", "ASC"]],
-  });
-};
-
 export const crearNuevaCita = async (datosCita, usuario) => {
   const { medicoId, fecha_hora } = datosCita;
   const fechaCita = new Date(fecha_hora);
@@ -55,10 +10,16 @@ export const crearNuevaCita = async (datosCita, usuario) => {
     throw createAppError("No se pueden crear citas en el pasado.", HTTP_STATUS.BAD_REQUEST);
   }
 
-  const diaSemana = fechaCita.getUTCDay();
-  const horaCitaEnMinutos = fechaCita.getUTCHours() * 60 + fechaCita.getUTCMinutes();
+  const CLINICA_TIMEZONE = "America/Guatemala";
 
-  const horarioDelDia = await HorarioMedico.findOne({ where: { medicoId, dia_semana: diaSemana } });
+  const diaSemanaLocal = fechaCita.getDay();
+  const diaSemanaParaDB = diaSemanaLocal === 0 ? 7 : diaSemanaLocal;
+
+  const horaLocalString = fechaCita.toLocaleTimeString("en-GB", { timeZone: CLINICA_TIMEZONE, hour: "2-digit", minute: "2-digit" });
+  const [hora, minuto] = horaLocalString.split(":").map(Number);
+  const horaCitaEnMinutos = hora * 60 + minuto;
+
+  const horarioDelDia = await HorarioMedico.findOne({ where: { medicoId, dia_semana: diaSemanaParaDB } });
 
   if (!horarioDelDia) {
     throw createAppError("El médico no tiene un horario de trabajo definido para el día seleccionado.", HTTP_STATUS.BAD_REQUEST);
@@ -70,8 +31,9 @@ export const crearNuevaCita = async (datosCita, usuario) => {
   const horaFinMin = finH * 60 + finM;
 
   if (horaCitaEnMinutos < horaInicioMin || horaCitaEnMinutos + duracionCitaMin > horaFinMin) {
+    const horaSolicitada = `${String(hora).padStart(2, "0")}:${String(minuto).padStart(2, "0")}`;
     throw createAppError(
-      `El horario solicitado está fuera del horario laboral del médico (${horarioDelDia.hora_inicio} - ${horarioDelDia.hora_fin}).`,
+      `La hora solicitada (${horaSolicitada}) está fuera del horario laboral del médico para ese día (${horarioDelDia.hora_inicio} - ${horarioDelDia.hora_fin}).`,
       HTTP_STATUS.BAD_REQUEST
     );
   }
@@ -116,37 +78,4 @@ export const crearNuevaCita = async (datosCita, usuario) => {
   }
 
   return await Cita.create({ ...datosCita, pacienteId: paciente.id, estado: CITA_ESTADOS.PENDIENTE });
-};
-
-export const modificarCita = async (id, datosCita, usuario) => {
-  const cita = await Cita.findByPk(id);
-  if (!cita) throw createAppError("Cita no encontrada", HTTP_STATUS.NOT_FOUND);
-
-  if (usuario.rol === ROLES.PACIENTE) {
-    const paciente = await Paciente.findOne({ where: { usuarioId: usuario.id } });
-    if (cita.pacienteId !== paciente.id) {
-      throw createAppError("No tienes permiso para modificar esta cita.", HTTP_STATUS.FORBIDDEN);
-    }
-  } else if (usuario.rol === ROLES.MEDICO) {
-    const medico = await Medico.findOne({ where: { usuarioId: usuario.id } });
-    if (cita.medicoId !== medico.id) {
-      throw createAppError("No tienes permiso para modificar esta cita.", HTTP_STATUS.FORBIDDEN);
-    }
-  }
-
-  return await cita.update(datosCita);
-};
-
-export const cancelarCita = async (id, usuario) => {
-  const cita = await Cita.findByPk(id);
-  if (!cita) throw createAppError("Cita no encontrada", HTTP_STATUS.NOT_FOUND);
-
-  if (usuario.rol === ROLES.PACIENTE) {
-    const paciente = await Paciente.findOne({ where: { usuarioId: usuario.id } });
-    if (cita.pacienteId !== paciente.id) {
-      throw createAppError("No tienes permiso para cancelar esta cita.", HTTP_STATUS.FORBIDDEN);
-    }
-  }
-
-  return await cita.update({ estado: CITA_ESTADOS.CANCELADA });
 };
