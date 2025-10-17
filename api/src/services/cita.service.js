@@ -1,5 +1,5 @@
 import db from "../models/index.js";
-import { Op, literal } from "sequelize"; // <-- Asegúrate de importar 'literal'
+import { Op, literal } from "sequelize";
 import { CITA_ESTADOS, HTTP_STATUS } from "../dictionaries/index.js";
 import { createAppError } from "../utils/appError.js";
 
