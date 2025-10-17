@@ -10,9 +10,11 @@ import allRoutes from "./routes/index.js";
 
 const app = express();
 
+const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : ["http://localhost:5173"];
+
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://clinica-saludtotal-production.up.railway.app"],
+    origin: allowedOrigins,
     credentials: true,
   })
 );

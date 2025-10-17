@@ -6,7 +6,9 @@ export const useGetQuery = (queryKey, endpoint, options = {}) => {
   const { showErrorToast = true, ...restOfOptions } = options;
 
   return useQuery(queryKey, () => apiFetch(endpoint), {
-    retryOnWindowFocus: false,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 10 * 60 * 1000,
     ...restOfOptions,
     onError: (error) => {
       if (showErrorToast) {
