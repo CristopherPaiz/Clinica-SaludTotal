@@ -1,0 +1,453 @@
+{
+  "info": {
+    "_postman_id": "9d1fde51-bdcf-4228-b821-74f9c9528090",
+    "name": "Clínica SaludTotal API (Final)",
+    "description": "Versión final de la colección. Incluye gestión de horarios y casos de prueba para todas las reglas de negocio. El login guarda automáticamente el token en la variable `authToken`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth (Autenticación)",
+      "item": [
+        {
+          "name": "POST Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"authToken\", responseData.token);",
+                  "    console.log(\"Token de Admin guardado.\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Inicia sesión como administrador. El token se guarda automáticamente."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Login Medico",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"authToken\", responseData.token);",
+                  "    console.log(\"Token de Médico guardado.\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"cmorales\",\n    \"password\": \"medico123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Inicia sesión como médico. El token se guarda automáticamente."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Login Paciente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"authToken\", responseData.token);",
+                  "    console.log(\"Token de Paciente guardado.\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"paciente1\",\n    \"password\": \"user123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Inicia sesión como paciente. El token se guarda automáticamente."
+          },
+          "response": []
+        }
+      ],
+      "description": "Peticiones para autenticación y registro."
+    },
+    {
+      "name": "Rutas Públicas",
+      "item": [
+        {
+          "name": "GET Listar Médicos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/medicos",
+              "host": ["{{baseUrl}}"],
+              "path": ["medicos"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Obtener Configuración del Negocio",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/configuracion",
+              "host": ["{{baseUrl}}"],
+              "path": ["configuracion"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Flujo Paciente",
+      "item": [
+        {
+          "name": "GET Mi Perfil",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pacientes/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["pacientes", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Mis Citas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/citas",
+              "host": ["{{baseUrl}}"],
+              "path": ["citas"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST Solicitar Cita (Éxito - Dentro de Horario)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"medicoId\": 1,\n    \"fecha_hora\": \"2025-10-20T09:00:00.000Z\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/citas",
+              "host": ["{{baseUrl}}"],
+              "path": ["citas"]
+            },
+            "description": "Dr. Morales (ID 1) trabaja los Lunes de 08:00 a 12:00. La fecha 2025-10-20 es Lunes. Esta petición debe ser exitosa."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Solicitar Cita (Falla - Día no laboral)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"medicoId\": 1,\n    \"fecha_hora\": \"2025-10-21T09:00:00.000Z\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/citas",
+              "host": ["{{baseUrl}}"],
+              "path": ["citas"]
+            },
+            "description": "Dr. Morales (ID 1) NO trabaja los Martes. La fecha 2025-10-21 es Martes. Esta petición debe fallar con un error 400."
+          },
+          "response": []
+        },
+        {
+          "name": "POST Solicitar Cita (Falla - Fuera de Horario)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"medicoId\": 1,\n    \"fecha_hora\": \"2025-10-20T13:00:00.000Z\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/citas",
+              "host": ["{{baseUrl}}"],
+              "path": ["citas"]
+            },
+            "description": "Dr. Morales (ID 1) trabaja los Lunes pero solo hasta las 12:00. Esta petición a las 13:00 debe fallar con un error 400."
+          },
+          "response": []
+        }
+      ],
+      "description": "Peticiones que un paciente puede realizar. Primero, ejecuta 'Login Paciente'."
+    },
+    {
+      "name": "Flujo Médico",
+      "item": [
+        {
+          "name": "GET Mi Perfil",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/medicos/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["medicos", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET Mi Agenda (Citas)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/citas",
+              "host": ["{{baseUrl}}"],
+              "path": ["citas"]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "Peticiones que un médico puede realizar. Primero, ejecuta 'Login Medico'."
+    },
+    {
+      "name": "Flujo Admin",
+      "item": [
+        {
+          "name": "Gestión de Horarios de Médicos",
+          "item": [
+            {
+              "name": "GET Listar Horarios de un Médico",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/medicos/1/horarios",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["admin", "medicos", "1", "horarios"]
+                },
+                "description": "Obtiene los horarios de trabajo del médico con ID 1 (Dr. Morales)."
+              },
+              "response": []
+            },
+            {
+              "name": "POST Añadir Horario a un Médico",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"dia_semana\": 2, \n    \"hora_inicio\": \"13:00\",\n    \"hora_fin\": \"17:00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/admin/medicos/1/horarios",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["admin", "medicos", "1", "horarios"]
+                },
+                "description": "Añade un nuevo horario de trabajo para el médico con ID 1 para el día Martes (dia_semana=2)."
+              },
+              "response": []
+            },
+            {
+              "name": "PUT Actualizar Horario",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"hora_fin\": \"13:00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/admin/medicos/1/horarios/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["admin", "medicos", "1", "horarios", "1"]
+                },
+                "description": "Actualiza el horario con ID 1 (Lunes del Dr. Morales), cambiando su hora de fin."
+              },
+              "response": []
+            },
+            {
+              "name": "DELETE Eliminar Horario",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/medicos/1/horarios/3",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["admin", "medicos", "1", "horarios", "3"]
+                },
+                "description": "Elimina el horario con ID 3 (Viernes del Dr. Morales)."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Gestión de Pacientes",
+          "item": [
+            {
+              "name": "GET Listar Todos los Pacientes",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/pacientes?page=1&size=5",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["pacientes"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "size",
+                      "value": "5"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Gestión de Médicos",
+          "item": [
+            {
+              "name": "POST Crear Nuevo Médico",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"username\": \"rflores\",\n    \"password\": \"medico123\",\n    \"nombre_completo\": \"Dr. Ricardo Flores\",\n    \"colegiado\": \"11223\",\n    \"especialidad\": \"Oftalmología\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/admin/medicos",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["admin", "medicos"]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ],
+      "description": "Peticiones que un administrador puede realizar. Primero, ejecuta 'Login Admin'."
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{authToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001/api",
+      "type": "string"
+    }
+  ]
+}
