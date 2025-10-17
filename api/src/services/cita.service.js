@@ -1,28 +1,36 @@
+import db from "../models/index.js";
+import { Op, literal } from "sequelize"; // <-- Asegúrate de importar 'literal'
+import { CITA_ESTADOS, HTTP_STATUS } from "../dictionaries/index.js";
+import { createAppError } from "../utils/appError.js";
+
+const { Cita, Paciente, Medico, Configuracion, HorarioMedico } = db;
+
 export const crearNuevaCita = async (datosCita, usuario) => {
   const { medicoId, fecha_hora } = datosCita;
-  const fechaCita = new Date(fecha_hora);
+  const fechaCitaUTC = new Date(fecha_hora);
 
   const configuracion = await Configuracion.findOne();
   if (!configuracion) throw createAppError("La configuración del sistema no está disponible.", HTTP_STATUS.INTERNAL_SERVER_ERROR);
   const duracionCitaMin = configuracion.duracion_cita_min;
 
-  if (fechaCita < new Date()) {
+  if (fechaCitaUTC < new Date()) {
     throw createAppError("No se pueden crear citas en el pasado.", HTTP_STATUS.BAD_REQUEST);
   }
 
   const CLINICA_TIMEZONE = "America/Guatemala";
 
-  const diaSemanaLocal = fechaCita.getDay();
+  const fechaEnTimezoneClinica = new Date(fechaCitaUTC.toLocaleString("en-US", { timeZone: CLINICA_TIMEZONE }));
+
+  const diaSemanaLocal = fechaEnTimezoneClinica.getDay();
   const diaSemanaParaDB = diaSemanaLocal === 0 ? 7 : diaSemanaLocal;
 
-  const horaLocalString = fechaCita.toLocaleTimeString("en-GB", { timeZone: CLINICA_TIMEZONE, hour: "2-digit", minute: "2-digit" });
-  const [hora, minuto] = horaLocalString.split(":").map(Number);
-  const horaCitaEnMinutos = hora * 60 + minuto;
+  const horaCitaEnMinutos = fechaEnTimezoneClinica.getHours() * 60 + fechaEnTimezoneClinica.getMinutes();
 
   const horarioDelDia = await HorarioMedico.findOne({ where: { medicoId, dia_semana: diaSemanaParaDB } });
 
   if (!horarioDelDia) {
-    throw createAppError("El médico no tiene un horario de trabajo definido para el día seleccionado.", HTTP_STATUS.BAD_REQUEST);
+    const diaSolicitado = new Intl.DateTimeFormat("es-ES", { weekday: "long", timeZone: CLINICA_TIMEZONE }).format(fechaCitaUTC);
+    throw createAppError(`El médico no trabaja los días ${diaSolicitado}.`, HTTP_STATUS.BAD_REQUEST);
   }
 
   const [inicioH, inicioM] = horarioDelDia.hora_inicio.split(":").map(Number);
@@ -31,20 +39,23 @@ export const crearNuevaCita = async (datosCita, usuario) => {
   const horaFinMin = finH * 60 + finM;
 
   if (horaCitaEnMinutos < horaInicioMin || horaCitaEnMinutos + duracionCitaMin > horaFinMin) {
-    const horaSolicitada = `${String(hora).padStart(2, "0")}:${String(minuto).padStart(2, "0")}`;
+    const horaSolicitada = fechaEnTimezoneClinica.toTimeString().substring(0, 5);
     throw createAppError(
-      `La hora solicitada (${horaSolicitada}) está fuera del horario laboral del médico para ese día (${horarioDelDia.hora_inicio} - ${horarioDelDia.hora_fin}).`,
+      `La hora solicitada (${horaSolicitada}) está fuera del horario laboral del médico para ese día (${horarioDelDia.hora_inicio.substring(
+        0,
+        5
+      )} - ${horarioDelDia.hora_fin.substring(0, 5)}).`,
       HTTP_STATUS.BAD_REQUEST
     );
   }
 
-  const fechaFinCita = new Date(fechaCita.getTime() + duracionCitaMin * 60000);
+  const fechaFinCitaUTC = new Date(fechaCitaUTC.getTime() + duracionCitaMin * 60000);
   const solape = await Cita.findOne({
     where: {
       medicoId,
       fecha_hora: {
-        [Op.lt]: fechaFinCita,
-        [Op.gte]: new Date(fechaCita.getTime() - (duracionCitaMin - 1) * 60000),
+        [Op.lt]: fechaFinCitaUTC,
+        [Op.gte]: new Date(fechaCitaUTC.getTime() - (duracionCitaMin - 1) * 60000),
       },
       estado: { [Op.notIn]: [CITA_ESTADOS.CANCELADA] },
     },
@@ -59,17 +70,16 @@ export const crearNuevaCita = async (datosCita, usuario) => {
     throw createAppError("El perfil del paciente no fue encontrado.", HTTP_STATUS.NOT_FOUND);
   }
 
-  const startOfDay = new Date(fechaCita);
-  startOfDay.setUTCHours(0, 0, 0, 0);
-  const endOfDay = new Date(fechaCita);
-  endOfDay.setUTCHours(23, 59, 59, 999);
+  const fechaLocalString = `${fechaEnTimezoneClinica.getFullYear()}-${String(fechaEnTimezoneClinica.getMonth() + 1).padStart(2, "0")}-${String(
+    fechaEnTimezoneClinica.getDate()
+  ).padStart(2, "0")}`;
 
   const citaExistenteMismoDia = await Cita.findOne({
     where: {
       pacienteId: paciente.id,
       medicoId,
-      fecha_hora: { [Op.between]: [startOfDay, endOfDay] },
       estado: { [Op.notIn]: [CITA_ESTADOS.CANCELADA] },
+      [Op.and]: literal(`DATE(fecha_hora AT TIME ZONE '${CLINICA_TIMEZONE}') = '${fechaLocalString}'`),
     },
   });
 
