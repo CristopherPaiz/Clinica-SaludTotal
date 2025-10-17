@@ -16,13 +16,15 @@ export function PaginaPanelAdmin() {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="dashboard" className="w-full">
-            <TabsList>
-              <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-              <TabsTrigger value="medicos">Médicos</TabsTrigger>
-              <TabsTrigger value="pacientes">Pacientes</TabsTrigger>
-              <TabsTrigger value="especialidades">Especialidades</TabsTrigger>
-              <TabsTrigger value="configuracion">Configuración</TabsTrigger>
-            </TabsList>
+            <div className="w-full overflow-x-auto pb-1">
+              <TabsList>
+                <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+                <TabsTrigger value="medicos">Médicos</TabsTrigger>
+                <TabsTrigger value="pacientes">Pacientes</TabsTrigger>
+                <TabsTrigger value="especialidades">Especialidades</TabsTrigger>
+                <TabsTrigger value="configuracion">Configuración</TabsTrigger>
+              </TabsList>
+            </div>
             <TabsContent value="dashboard" className="mt-4">
               <DashboardAdmin />
             </TabsContent>
