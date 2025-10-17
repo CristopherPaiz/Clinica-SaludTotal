@@ -1,4 +1,13 @@
 const apiFetch = async (endpoint, options = {}) => {
+  if (!import.meta.env.VITE_API_URL) {
+    console.error("La variable de entorno VITE_API_URL no está definida.");
+    throw new Error("La variable de entorno VITE_API_URL no está definida.");
+  }
+
+  if (!endpoint.startsWith("/")) {
+    endpoint = `/${endpoint}`;
+  }
+
   const url = `${import.meta.env.VITE_API_URL}${endpoint}`;
 
   const defaultOptions = {
