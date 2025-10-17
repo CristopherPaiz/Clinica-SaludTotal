@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
+import { FormattedInput } from "@/components/ui/FormattedInput";
 
 const esquemaPaciente = z.object({
   nombre_completo: z.string().min(3, "El nombre es obligatorio."),
@@ -35,73 +35,13 @@ export function FormularioPaciente({ paciente, alGuardar, cargando, esEdicion = 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(alGuardar)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="nombre_completo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre Completo</FormLabel>
-              <FormControl>
-                <Input {...field} disabled={cargando} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormattedInput control={form.control} name="nombre_completo" label="Nombre Completo" formatType="alpha" disabled={cargando} />
         <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="dpi"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>DPI</FormLabel>
-                <FormControl>
-                  <Input {...field} disabled={cargando} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="telefono"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Teléfono</FormLabel>
-                <FormControl>
-                  <Input {...field} disabled={cargando} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <FormattedInput control={form.control} name="dpi" label="DPI" formatType="number" maxLength={13} disabled={cargando} />
+          <FormattedInput control={form.control} name="telefono" label="Teléfono" formatType="number" maxLength={8} disabled={cargando} />
         </div>
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" {...field} disabled={cargando || esEdicion} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre de Usuario</FormLabel>
-              <FormControl>
-                <Input {...field} disabled={cargando || esEdicion} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormattedInput control={form.control} name="email" label="Email" type="email" disabled={cargando || esEdicion} />
+        <FormattedInput control={form.control} name="username" label="Nombre de Usuario" formatType="alphanumeric" disabled={cargando || esEdicion} />
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="outline">

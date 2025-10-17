@@ -5,9 +5,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { esquemaRegistro } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Loader2, Stethoscope } from "lucide-react";
+import { FormattedInput } from "@/components/ui/FormattedInput";
 
 export function PaginaRegistro() {
   const navegar = useNavigate();
@@ -47,86 +47,14 @@ export function PaginaRegistro() {
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="nombre_completo"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nombre completo</FormLabel>
-                          <FormControl>
-                            <Input {...field} disabled={cargando} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="dpi"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>DPI</FormLabel>
-                          <FormControl>
-                            <Input {...field} disabled={cargando} maxLength={13} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <FormattedInput control={form.control} name="nombre_completo" label="Nombre completo" formatType="alpha" disabled={cargando} />
+                    <FormattedInput control={form.control} name="dpi" label="DPI" formatType="number" maxLength={13} disabled={cargando} />
                   </div>
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Correo electrónico</FormLabel>
-                        <FormControl>
-                          <Input type="email" {...field} disabled={cargando} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="telefono"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Teléfono</FormLabel>
-                        <FormControl>
-                          <Input {...field} disabled={cargando} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <FormattedInput control={form.control} name="email" label="Correo electrónico" type="email" disabled={cargando} />
+                  <FormattedInput control={form.control} name="telefono" label="Teléfono" formatType="number" maxLength={8} disabled={cargando} />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="username"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Nombre de usuario</FormLabel>
-                          <FormControl>
-                            <Input {...field} disabled={cargando} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Contraseña</FormLabel>
-                          <FormControl>
-                            <Input type="password" {...field} disabled={cargando} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <FormattedInput control={form.control} name="username" label="Nombre de usuario" formatType="alphanumeric" disabled={cargando} />
+                    <FormattedInput control={form.control} name="password" label="Contraseña" type="password" disabled={cargando} />
                   </div>
                   <Button type="submit" className="w-full" disabled={cargando}>
                     {cargando && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

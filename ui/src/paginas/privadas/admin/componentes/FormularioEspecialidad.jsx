@@ -2,10 +2,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
+import { FormattedInput } from "@/components/ui/FormattedInput";
 
 const esquema = z.object({
   nombre: z.string().min(3, "El nombre debe tener al menos 3 caracteres."),
@@ -20,19 +20,7 @@ export function FormularioEspecialidad({ especialidad, alGuardar, cargando }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(alGuardar)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="nombre"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre de la Especialidad</FormLabel>
-              <FormControl>
-                <Input {...field} disabled={cargando} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormattedInput control={form.control} name="nombre" label="Nombre de la Especialidad" formatType="alpha" disabled={cargando} />
         <DialogFooter>
           <DialogClose asChild>
             <Button type="button" variant="outline">

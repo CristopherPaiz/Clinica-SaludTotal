@@ -4,11 +4,11 @@ import { z } from "zod";
 import { RUTAS_API } from "@/lib/dictionaries";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
 import { useGetQuery } from "@/hooks/useGetQuery";
+import { FormattedInput } from "@/components/ui/FormattedInput";
 
 const esquemaMedico = z.object({
   nombre_completo: z.string().min(3, "El nombre es obligatorio."),
@@ -43,19 +43,7 @@ export function FormularioMedico({ medico, alGuardar, cargando, esEdicion = fals
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(alGuardar)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="nombre_completo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre Completo</FormLabel>
-              <FormControl>
-                <Input {...field} disabled={cargando} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormattedInput control={form.control} name="nombre_completo" label="Nombre Completo" formatType="alpha" disabled={cargando} />
 
         <FormField
           control={form.control}
@@ -82,48 +70,12 @@ export function FormularioMedico({ medico, alGuardar, cargando, esEdicion = fals
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="colegiado"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>No. Colegiado</FormLabel>
-              <FormControl>
-                <Input {...field} disabled={cargando} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormattedInput control={form.control} name="colegiado" label="No. Colegiado" formatType="alphanumeric" disabled={cargando} />
 
         {!esEdicion && (
           <>
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre de Usuario</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={cargando} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Contraseña</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} disabled={cargando} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormattedInput control={form.control} name="username" label="Nombre de Usuario" formatType="alphanumeric" disabled={cargando} />
+            <FormattedInput control={form.control} name="password" label="Contraseña" type="password" disabled={cargando} />
           </>
         )}
         <DialogFooter>

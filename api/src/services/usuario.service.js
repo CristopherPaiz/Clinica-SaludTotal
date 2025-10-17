@@ -53,7 +53,7 @@ const registrarUsuarioConPerfil = async (datos, rol, modeloPerfil, camposPerfil)
   } catch (error) {
     await t.rollback();
     if (error.name === "SequelizeUniqueConstraintError") {
-      throw createAppError("El email, DPI, colegiado o nombre de usuario ya están registrados.", HTTP_STATUS.BAD_REQUEST);
+      throw createAppError("El email, DPI o nombre de usuario ya están registrados.", HTTP_STATUS.BAD_REQUEST);
     }
     throw error;
   }

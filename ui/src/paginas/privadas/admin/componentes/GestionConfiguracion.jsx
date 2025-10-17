@@ -6,11 +6,11 @@ import { useGetQuery } from "@/hooks/useGetQuery";
 import { useMutateQuery } from "@/hooks/useMutateQuery";
 import { RUTAS_API } from "@/lib/dictionaries";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Form } from "@/components/ui/form";
 import { ContainerLoader } from "@/components/common/Loader";
 import { Loader2 } from "lucide-react";
+import { FormattedInput } from "@/components/ui/FormattedInput";
+import { FormattedTextarea } from "@/components/ui/FormattedTextarea";
 
 const esquemaConfiguracion = z.object({
   nombre_negocio: z.string().min(1, "El nombre es obligatorio."),
@@ -59,96 +59,36 @@ export function GestionConfiguracion() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-6 max-w-2xl">
-        <FormField
-          control={form.control}
-          name="nombre_negocio"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre de la Clínica</FormLabel>
-              <FormControl>
-                <Input {...field} disabled={mutacionActualizar.isPending} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
+        <FormattedInput control={form.control} name="nombre_negocio" label="Nombre de la Clínica" disabled={mutacionActualizar.isPending} />
+        <FormattedTextarea
           control={form.control}
           name="servicios"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descripción de Servicios</FormLabel>
-              <FormControl>
-                <Textarea {...field} rows={3} disabled={mutacionActualizar.isPending} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Descripción de Servicios"
+          rows={3}
+          disabled={mutacionActualizar.isPending}
         />
-        <FormField
+        <FormattedInput
           control={form.control}
           name="mapa_coordenadas"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Coordenadas de Ubicación</FormLabel>
-              <FormControl>
-                <Textarea {...field} rows={5} disabled={mutacionActualizar.isPending} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Coordenadas de Ubicación (lat, lon)"
+          disabled={mutacionActualizar.isPending}
         />
-        <FormField
+        <FormattedTextarea
           control={form.control}
           name="nosotros_texto"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Texto Página "Nosotros"</FormLabel>
-              <FormControl>
-                <Textarea {...field} rows={5} disabled={mutacionActualizar.isPending} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label='Texto Página "Nosotros"'
+          rows={5}
+          disabled={mutacionActualizar.isPending}
         />
-        <FormField
-          control={form.control}
-          name="horarios"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Horarios de Atención</FormLabel>
-              <FormControl>
-                <Textarea {...field} rows={3} disabled={mutacionActualizar.isPending} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="ubicacion"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ubicación</FormLabel>
-              <FormControl>
-                <Input {...field} disabled={mutacionActualizar.isPending} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
+        <FormattedTextarea control={form.control} name="horarios" label="Horarios de Atención" rows={3} disabled={mutacionActualizar.isPending} />
+        <FormattedInput control={form.control} name="ubicacion" label="Ubicación" disabled={mutacionActualizar.isPending} />
+        <FormattedInput
           control={form.control}
           name="duracion_cita_min"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Duración de Cita (minutos)</FormLabel>
-              <FormControl>
-                <Input type="number" {...field} disabled={mutacionActualizar.isPending} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          label="Duración de Cita (minutos)"
+          type="number"
+          formatType="number"
+          disabled={mutacionActualizar.isPending}
         />
         <Button type="submit" disabled={mutacionActualizar.isPending}>
           {mutacionActualizar.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Guardar Cambios

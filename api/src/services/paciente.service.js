@@ -42,7 +42,6 @@ export const modificarPaciente = async (id, datosPaciente, usuario) => {
   if (usuario.rol === ROLES.PACIENTE) {
     paciente = await Paciente.findOne({ where: { usuarioId: usuario.id } });
   } else {
-    // Admin
     paciente = await Paciente.findByPk(id);
   }
 

@@ -5,10 +5,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { esquemaLogin } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Loader2, Stethoscope, Shield, User, UserCircle } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { FormattedInput } from "@/components/ui/FormattedInput";
 
 export function PaginaLogin() {
   const navegar = useNavigate();
@@ -45,34 +45,23 @@ export function PaginaLogin() {
             <CardContent className="pt-6">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-4">
-                  <FormField
+                  <FormattedInput
                     control={form.control}
                     name="username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Usuario</FormLabel>
-                        <FormControl>
-                          <Input placeholder="tu_usuario" {...field} disabled={cargando} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label="Usuario"
+                    placeholder="tu_usuario"
+                    formatType="alphanumeric"
+                    disabled={cargando}
                   />
-                  <FormField
+                  <FormattedInput
                     control={form.control}
                     name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Contraseña</FormLabel>
-                        <FormControl>
-                          <Input type="password" placeholder="••••••••" {...field} disabled={cargando} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label="Contraseña"
+                    type="password"
+                    placeholder="••••••••"
+                    disabled={cargando}
                   />
 
-                  {/* INICIO: Sección para login rápido (DEMO) - Quitar en producción */}
                   <div className="space-y-3 pt-2">
                     <div className="relative">
                       <Separator />
@@ -92,7 +81,6 @@ export function PaginaLogin() {
                       </Button>
                     </div>
                   </div>
-                  {/* FIN: Sección para login rápido (DEMO) */}
 
                   <Button type="submit" className="w-full" disabled={cargando}>
                     {cargando && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

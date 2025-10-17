@@ -7,10 +7,10 @@ import { useMutateQuery } from "@/hooks/useMutateQuery";
 import { RUTAS_API } from "@/lib/dictionaries";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
+import { FormattedInput } from "@/components/ui/FormattedInput";
 
 const esquemaPerfil = z.object({
   nombre_completo: z.string().min(3, "El nombre debe tener al menos 3 caracteres."),
@@ -83,70 +83,36 @@ export function PaginaMiPerfil() {
           ) : (
             <Form {...form}>
               <form onSubmit={form.handleSubmit(alEnviar)} className="space-y-6">
-                <FormField
+                <FormattedInput
                   control={form.control}
                   name="nombre_completo"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Nombre Completo</FormLabel>
-                      <FormControl>
-                        <Input {...field} disabled={mutacionActualizar.isPending} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Nombre Completo"
+                  formatType="alpha"
+                  disabled={mutacionActualizar.isPending}
                 />
-                <FormField
+                <FormattedInput
                   control={form.control}
                   name="dpi"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>DPI</FormLabel>
-                      <FormControl>
-                        <Input {...field} disabled={mutacionActualizar.isPending} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="DPI"
+                  formatType="number"
+                  maxLength={13}
+                  disabled={mutacionActualizar.isPending}
                 />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Correo Electrónico</FormLabel>
-                      <FormControl>
-                        <Input {...field} disabled />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
+                <FormattedInput control={form.control} name="email" label="Correo Electrónico" disabled />
+                <FormattedInput
                   control={form.control}
                   name="telefono"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Teléfono</FormLabel>
-                      <FormControl>
-                        <Input {...field} disabled={mutacionActualizar.isPending} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Teléfono"
+                  formatType="number"
+                  maxLength={8}
+                  disabled={mutacionActualizar.isPending}
                 />
-                <FormField
+                <FormattedInput
                   control={form.control}
                   name="direccion"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Dirección</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="Tu dirección (opcional)" disabled={mutacionActualizar.isPending} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Dirección"
+                  placeholder="Tu dirección (opcional)"
+                  disabled={mutacionActualizar.isPending}
                 />
                 <Button type="submit" disabled={mutacionActualizar.isPending}>
                   {mutacionActualizar.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
